@@ -1,0 +1,96 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;500&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Cormorant Garamond", serif;
+  --font-display: "Cinzel", serif;
+
+  --color-gold: #C9A84C;
+  --color-gold-light: #E8C97A;
+  --color-gold-dark: #8A6A18;
+  --color-black-rich: #0A0806;
+  --color-black-soft: #1C1810;
+  --color-cream: #FAF7F0;
+  --color-cream-dark: #F3EDE0;
+}
+
+@layer base {
+  body {
+    background-color: var(--color-cream);
+    color: var(--color-black-soft);
+    @apply font-sans font-light overflow-x-hidden;
+  }
+
+  h1, h2, h3, h4, .font-display {
+    @apply font-display tracking-widest;
+  }
+
+  .font-serif {
+    @apply font-serif italic;
+  }
+}
+
+@layer utilities {
+  .bg-noise {
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3欲%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  }
+}
+
+@layer components {
+  .btn-gold {
+    @apply bg-gold text-black-rich px-11 py-4 border-none cursor-pointer font-sans text-[10px] tracking-[4px] uppercase transition-all duration-500 inline-flex items-center gap-2 hover:bg-gold-light hover:-translate-y-1 hover:shadow-[0_12px_30px_rgba(201,168,76,0.25)] active:scale-95;
+  }
+
+  .btn-ghost {
+    @apply bg-transparent text-black-soft px-11 py-4 border-[1.5px] border-black-soft/30 cursor-pointer font-sans text-[10px] tracking-[4px] uppercase transition-all duration-300 inline-flex items-center gap-2 hover:border-gold hover:text-gold active:scale-95;
+  }
+
+  .sec-eyebrow {
+    @apply text-[9px] tracking-[7px] text-gold uppercase text-center mb-3;
+  }
+
+  .sec-title {
+    @apply font-display text-4xl md:text-5xl font-normal text-black-soft text-center tracking-[4px] mb-3;
+  }
+
+  .sec-sub {
+    @apply font-serif text-lg text-stone-500 text-center mb-16;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 3px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-cream);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-gold);
+}
+
+/* Animations */
+@keyframes float {
+  0%, 100% { transform: translateY(0) translateX(0); }
+  25% { transform: translateY(-20px) translateX(10px); }
+  50% { transform: translateY(-35px) translateX(-15px); }
+  75% { transform: translateY(-15px) translateX(20px); }
+}
+
+.animate-float {
+  animation: float 20s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% center; }
+  100% { background-position: -200% center; }
+}
+
+.shimmer-text:hover {
+  background: linear-gradient(90deg, #1C1810 0%, #C9A84C 50%, #1C1810 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer 2s linear infinite;
+}
