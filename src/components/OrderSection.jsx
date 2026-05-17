@@ -223,11 +223,19 @@ export const OrderSection = ({
               }
               className="w-full p-4 bg-white/5 border border-white/10 text-white rounded-xl"
             >
-              <option value="">Select City</option>
+              <option value="" className="bg-black text-white">
+                Select City
+              </option>
+
               {CITIES.map((c) => (
-                <option key={c}>{c}</option>
+                <option key={c} value={c} className="bg-black text-white">
+                  {c}
+                </option>
               ))}
-              <option value="Other">Other</option>
+
+              <option value="Other" className="bg-black text-white">
+                Other
+              </option>
             </select>
 
             {/* ADDRESS */}
@@ -253,9 +261,15 @@ export const OrderSection = ({
                 }
                 className="w-full mt-3 p-4 bg-white/5 border border-white/10 text-white rounded-xl"
               >
-                <option value="COD">Cash on Delivery</option>
-                <option value="Card">EasyPaisa / JazzCash</option>
-                <option value="Bank Transfer">Bank Transfer</option>
+                <option value="COD" className="bg-black text-white">
+                  Cash on Delivery
+                </option>
+                <option value="Card" className="bg-black text-white">
+                  EasyPaisa / JazzCash
+                </option>
+                <option value="Bank Transfer" className="bg-black text-white">
+                  Bank Transfer
+                </option>
               </select>
             </div>
           </motion.div>
