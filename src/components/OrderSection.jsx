@@ -24,7 +24,6 @@ export const OrderSection = ({
 
   const selectedProducts = cart;
 
-  /* ---------------- SAFE TOTAL (fix NaN) ---------------- */
   const totalAmount = selectedProducts.reduce((sum, p) => {
     const price = Number(p.price);
     const qty = Number(p.qty) || 1;
@@ -34,19 +33,22 @@ export const OrderSection = ({
     return sum + price * qty;
   }, 0);
 
-  /* ---------------- FIX: QTY IN PRODUCT GRID ---------------- */
+  /* ---------------- FIXED QTY LOGIC ---------------- */
+
   const increaseQty = (product) => {
     const exists = cart.find((item) => item.id === product.id);
 
+    let updated;
+
     if (exists) {
-      onToggleProduct(
-        cart.map((item) =>
-          item.id === product.id ? { ...item, qty: (item.qty || 1) + 1 } : item,
-        ),
+      updated = cart.map((item) =>
+        item.id === product.id ? { ...item, qty: (item.qty || 1) + 1 } : item,
       );
     } else {
-      onToggleProduct([...cart, { ...product, qty: 1 }]);
+      updated = [...cart, { ...product, qty: 1 }];
     }
+
+    onToggleProduct(updated);
   };
 
   const decreaseQty = (product) => {
@@ -54,10 +56,13 @@ export const OrderSection = ({
     if (!exists) return;
 
     const updated = cart
-      .map((item) =>
-        item.id === product.id ? { ...item, qty: (item.qty || 1) - 1 } : item,
-      )
-      .filter((item) => (item.qty || 1) > 0);
+      .map((item) => {
+        if (item.id !== product.id) return item;
+
+        const newQty = (item.qty || 1) - 1;
+        return newQty > 0 ? { ...item, qty: newQty } : null;
+      })
+      .filter(Boolean);
 
     onToggleProduct(updated);
   };
@@ -121,7 +126,6 @@ export const OrderSection = ({
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(201,168,76,0.08),transparent_60%)]"></div>
 
       <div className="max-w-[1380px] mx-auto px-5 md:px-[60px] relative z-10">
-        {/* HEADER */}
         <div className="text-center mb-16">
           <p className="sec-eyebrow text-gold/80 tracking-[6px]">
             ◆ Place Your Order ◆
@@ -132,9 +136,7 @@ export const OrderSection = ({
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-12">
-          {/* LEFT */}
           <motion.div className="space-y-10">
-            {/* PRODUCTS */}
             <div>
               <label className="text-[10px] tracking-[5px] uppercase text-gold/70">
                 Select Fragrance(s)
@@ -155,7 +157,6 @@ export const OrderSection = ({
                       }`}
                     >
                       <div className="flex justify-between items-start">
-                        {/* PRODUCT INFO */}
                         <div>
                           <div
                             onClick={() => increaseQty(p)}
@@ -173,7 +174,6 @@ export const OrderSection = ({
                           </div>
                         </div>
 
-                        {/* QTY CONTROL (NEW) */}
                         <div className="flex items-center gap-2">
                           <button
                             onClick={() => decreaseQty(p)}
@@ -200,7 +200,6 @@ export const OrderSection = ({
               </div>
             </div>
 
-            {/* FORM (UNCHANGED) */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               {["name", "phone"].map((field) => (
                 <input
@@ -218,7 +217,6 @@ export const OrderSection = ({
               ))}
             </div>
 
-            {/* CITY (UNCHANGED) */}
             <select
               value={formData.city}
               onChange={(e) =>
@@ -249,7 +247,6 @@ export const OrderSection = ({
             />
           </motion.div>
 
-          {/* RIGHT */}
           <motion.div className="sticky top-[120px]">
             <div className="p-8 rounded-2xl border border-gold/15 bg-white/5">
               <h3 className="text-gold uppercase text-xs tracking-[4px] mb-6">
