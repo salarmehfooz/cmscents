@@ -9,7 +9,17 @@ export const CartSidebar = ({
   onUpdateQty,
   onRemove,
 }) => {
-  const subtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+  /* ---------------- SAFE CART ---------------- */
+  const safeCart = (cart || []).map((item) => ({
+    ...item,
+    price: Number(item.price) || 0,
+    qty: Number(item.qty) > 0 ? Number(item.qty) : 1,
+  }));
+
+  /* ---------------- SAFE TOTAL ---------------- */
+  const subtotal = safeCart.reduce((sum, item) => {
+    return sum + item.price * item.qty;
+  }, 0);
 
   return (
     <AnimatePresence>
@@ -34,11 +44,7 @@ export const CartSidebar = ({
                        bg-gradient-to-b from-[#0a0a0a] via-[#0b0b0b] to-[#050505]
                        border-l border-gold/10 z-[400] flex flex-col"
           >
-            {/* subtle glow */}
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(201,168,76,0.08),transparent_60%)] pointer-events-none"></div>
-
-            {/* HEADER */}
-            <div className="flex justify-between items-center p-7 px-8 border-b border-white/10 relative z-10">
+            <div className="flex justify-between items-center p-7 px-8 border-b border-white/10">
               <span className="font-display text-[11px] tracking-[5px] text-gold/80 uppercase">
                 Your Selection
               </span>
@@ -54,8 +60,8 @@ export const CartSidebar = ({
             </div>
 
             {/* ITEMS */}
-            <div className="flex-1 overflow-y-auto px-8 py-6 relative z-10">
-              {cart.length === 0 ? (
+            <div className="flex-1 overflow-y-auto px-8 py-6">
+              {safeCart.length === 0 ? (
                 <div className="text-center py-[80px]">
                   <p className="font-serif italic text-white/40">
                     Your selection is empty
@@ -63,7 +69,7 @@ export const CartSidebar = ({
                 </div>
               ) : (
                 <div className="space-y-6">
-                  {cart.map((item) => (
+                  {safeCart.map((item) => (
                     <div
                       key={item.id}
                       className="flex gap-4 items-center pb-6 border-b border-white/5"
@@ -75,21 +81,19 @@ export const CartSidebar = ({
 
                       {/* DETAILS */}
                       <div className="flex-1 min-w-0">
-                        <div className="font-display text-[13px] text-white tracking-[1px]">
+                        <div className="font-display text-[13px] text-white">
                           {item.name}
                         </div>
 
-                        <div className="text-[10px] text-white/40 tracking-[2px] uppercase mt-1">
+                        <div className="text-[10px] text-white/40 uppercase mt-1">
                           {item.sub} · 50ml EDP
                         </div>
 
-                        {/* qty controls */}
+                        {/* QTY */}
                         <div className="flex items-center gap-3 mt-3">
                           <button
                             onClick={() => onUpdateQty(item.id, -1)}
-                            className="w-7 h-7 rounded-full border border-gold/20
-                                       text-gold hover:bg-gold/10 transition
-                                       flex items-center justify-center"
+                            className="w-7 h-7 rounded-full border border-gold/20 text-gold flex items-center justify-center"
                           >
                             <Minus size={12} />
                           </button>
@@ -100,9 +104,7 @@ export const CartSidebar = ({
 
                           <button
                             onClick={() => onUpdateQty(item.id, 1)}
-                            className="w-7 h-7 rounded-full border border-gold/20
-                                       text-gold hover:bg-gold/10 transition
-                                       flex items-center justify-center"
+                            className="w-7 h-7 rounded-full border border-gold/20 text-gold flex items-center justify-center"
                           >
                             <Plus size={12} />
                           </button>
@@ -129,10 +131,10 @@ export const CartSidebar = ({
             </div>
 
             {/* FOOTER */}
-            {cart.length > 0 && (
-              <div className="p-7 px-8 border-t border-white/10 bg-black/40 backdrop-blur-md relative z-10">
-                <div className="flex justify-between items-center mb-6">
-                  <span className="text-white/50 text-[11px] tracking-[4px] uppercase">
+            {safeCart.length > 0 && (
+              <div className="p-7 px-8 border-t border-white/10 bg-black/40">
+                <div className="flex justify-between mb-6">
+                  <span className="text-white/50 uppercase text-[11px]">
                     Total
                   </span>
 
@@ -144,14 +146,12 @@ export const CartSidebar = ({
                 <a
                   href="#order"
                   onClick={onClose}
-                  className="block w-full text-center bg-gold text-black py-4 rounded-full
-                             text-sm tracking-[3px] uppercase hover:scale-[1.02]
-                             transition shadow-[0_0_40px_rgba(201,168,76,0.15)]"
+                  className="block w-full text-center bg-gold text-black py-4 rounded-full"
                 >
                   Proceed to Order →
                 </a>
 
-                <p className="text-center text-[10px] text-white/30 mt-4 tracking-[2px] uppercase">
+                <p className="text-center text-[10px] text-white/30 mt-4 uppercase">
                   Free delivery · COD Available
                 </p>
               </div>

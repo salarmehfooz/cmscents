@@ -16,64 +16,81 @@ export default function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [toastMsg, setToastMsg] = useState("");
 
-  const cartCount = cart.reduce((sum, item) => sum + item.qty, 0);
+  /* ---------------- NORMALIZER ---------------- */
+  const normalizeCart = (cart) =>
+    (cart || [])
+      .map((p) => ({
+        ...p,
+        price: Number(p.price) || 0,
+        qty: Number(p.qty) > 0 ? Number(p.qty) : 0,
+      }))
+      .filter((p) => p.qty > 0);
 
+  const cartCount = cart.reduce(
+    (sum, item) => sum + (Number(item.qty) || 0),
+    0,
+  );
+
+  /* ---------------- ADD ---------------- */
   const addToCart = (product) => {
     setCart((prev) => {
-      const existing = prev.find((item) => item.id === product.id);
-      if (existing) {
-        return prev.map((item) =>
-          item.id === product.id ? { ...item, qty: item.qty + 1 } : item,
+      const exists = prev.find((i) => i.id === product.id);
+
+      let updated;
+
+      if (exists) {
+        updated = prev.map((i) =>
+          i.id === product.id ? { ...i, qty: Number(i.qty || 1) + 1 } : i,
         );
+      } else {
+        updated = [...prev, { ...product, qty: 1 }];
       }
-      return [...prev, { ...product, qty: 1 }];
+
+      return normalizeCart(updated);
     });
+
     setIsCartOpen(true);
     setToastMsg(`${product.name} added to cart`);
   };
 
+  /* ---------------- UPDATE QTY ---------------- */
   const updateCartQty = (id, delta) => {
     setCart((prev) => {
-      const item = prev.find((i) => i.id === id);
-      if (!item) return prev;
-      const newQty = Math.max(0, item.qty + delta);
-      if (newQty === 0) return prev.filter((i) => i.id !== id);
-      return prev.map((i) => (i.id === id ? { ...i, qty: newQty } : i));
+      const updated = prev
+        .map((i) =>
+          i.id === id ? { ...i, qty: Number(i.qty || 1) + delta } : i,
+        )
+        .filter((i) => (Number(i.qty) || 0) > 0);
+
+      return normalizeCart(updated);
     });
   };
 
+  /* ---------------- REMOVE ---------------- */
   const removeFromCart = (id) => {
-    setCart((prev) => prev.filter((item) => item.id !== id));
-  };
-
-  const toggleProduct = (product) => {
-    setCart((prev) => {
-      const exists = prev.find((item) => item.id === product.id);
-      if (exists) {
-        return prev.filter((item) => item.id !== product.id);
-      }
-      return [...prev, { ...product, qty: 1 }];
-    });
+    setCart((prev) => normalizeCart(prev.filter((i) => i.id !== id)));
   };
 
   return (
-    <div className="min-h-screen bg-cream text-black-soft selection:bg-gold selection:text-black-rich relative">
-      <div className="fixed inset-0 bg-noise opacity-[0.015] pointer-events-none z-[9999]"></div>
-
+    <div className="min-h-screen bg-cream text-black-soft relative">
       <Navbar onOpenCart={() => setIsCartOpen(true)} cartCount={cartCount} />
 
       <main>
         <Hero />
         <StatsBar />
+
         <ProductSection onAddToCart={addToCart} />
+
         <AboutSection />
         <Testimonials />
+
         <OrderSection
           cart={cart}
-          onToggleProduct={toggleProduct}
+          onToggleProduct={setCart}
           onSuccess={() => setIsModalOpen(true)}
           showToast={setToastMsg}
         />
+
         <ContactSection />
       </main>
 

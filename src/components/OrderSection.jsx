@@ -8,7 +8,13 @@ export const OrderSection = ({
   onSuccess,
   showToast,
 }) => {
-  const pickedIds = new Set(cart.map((item) => item.id));
+  const safeCart = (cart || []).map((p) => ({
+    ...p,
+    price: Number(p.price) || 0,
+    qty: Number(p.qty) > 0 ? Number(p.qty) : 0,
+  }));
+
+  const pickedIds = new Set(safeCart.map((item) => item.id));
 
   const [formData, setFormData] = useState({
     name: "",
@@ -22,41 +28,37 @@ export const OrderSection = ({
 
   const [loading, setLoading] = useState(false);
 
-  const selectedProducts = cart;
-
   /* ---------------- SAFE TOTAL (NO NaN EVER) ---------------- */
-  const totalAmount = selectedProducts.reduce((sum, p) => {
-    const price = Number(p.price) || 0;
-    const qty = Number(p.qty) > 0 ? Number(p.qty) : 1;
-
-    return sum + price * qty;
+  const totalAmount = safeCart.reduce((sum, p) => {
+    const qty = p.qty > 0 ? p.qty : 1;
+    return sum + p.price * qty;
   }, 0);
 
   /* ---------------- FIXED QTY LOGIC ---------------- */
 
   const increaseQty = (product) => {
-    const exists = cart.find((item) => item.id === product.id);
+    const exists = safeCart.find((item) => item.id === product.id);
 
     let updated;
 
     if (exists) {
-      updated = cart.map((item) =>
+      updated = safeCart.map((item) =>
         item.id === product.id
           ? { ...item, qty: Number(item.qty || 1) + 1 }
           : item,
       );
     } else {
-      updated = [...cart, { ...product, qty: 1 }];
+      updated = [...safeCart, { ...product, qty: 1 }];
     }
 
     onToggleProduct(updated);
   };
 
   const decreaseQty = (product) => {
-    const exists = cart.find((item) => item.id === product.id);
+    const exists = safeCart.find((item) => item.id === product.id);
     if (!exists) return;
 
-    const updated = cart
+    const updated = safeCart
       .map((item) => {
         if (item.id !== product.id) return item;
 
@@ -68,11 +70,12 @@ export const OrderSection = ({
     onToggleProduct(updated);
   };
 
+  /* ---------------- SUBMIT ---------------- */
   const handleSubmit = async () => {
     const cityValue =
       formData.city === "Other" ? formData.cityOther : formData.city;
 
-    if (cart.length === 0)
+    if (safeCart.length === 0)
       return showToast("Please select at least one fragrance");
     if (!formData.name.trim()) return showToast("Please enter your full name");
     if (!formData.phone.trim())
@@ -91,9 +94,7 @@ export const OrderSection = ({
       phone: formData.phone,
       city: cityValue,
       address: formData.address,
-      products: selectedProducts
-        .map((p) => `${p.name} (x${Number(p.qty || 1)})`)
-        .join(", "),
+      products: safeCart.map((p) => `${p.name} (x${p.qty || 1})`).join(", "),
       total: `Rs. ${totalAmount.toLocaleString()}`,
       payment: formData.payment,
       note: formData.note || "—",
@@ -140,7 +141,6 @@ export const OrderSection = ({
         <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-12">
           {/* LEFT */}
           <motion.div className="space-y-10">
-            {/* PRODUCTS */}
             <div>
               <label className="text-[10px] tracking-[5px] uppercase text-gold/70">
                 Select Fragrance(s)
@@ -148,17 +148,13 @@ export const OrderSection = ({
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
                 {PRODS.map((p) => {
-                  const inCart = pickedIds.has(p.id);
-                  const qty = Number(cart.find((c) => c.id === p.id)?.qty) || 0;
+                  const qty =
+                    Number(safeCart.find((c) => c.id === p.id)?.qty) || 0;
 
                   return (
                     <div
                       key={p.id}
-                      className={`group p-4 rounded-xl border transition-all backdrop-blur-md ${
-                        inCart
-                          ? "bg-white/10 border-gold/40"
-                          : "bg-white/5 border-white/10"
-                      }`}
+                      className="group p-4 rounded-xl border bg-white/5 border-white/10"
                     >
                       <div className="flex justify-between items-start">
                         <div>
@@ -211,10 +207,7 @@ export const OrderSection = ({
                   key={field}
                   value={formData[field]}
                   onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      [field]: e.target.value,
-                    })
+                    setFormData({ ...formData, [field]: e.target.value })
                   }
                   placeholder={field === "name" ? "Full Name" : "Phone Number"}
                   className="bg-white/5 border border-white/10 text-white p-4 rounded-xl"
@@ -225,10 +218,7 @@ export const OrderSection = ({
             <select
               value={formData.city}
               onChange={(e) =>
-                setFormData({
-                  ...formData,
-                  city: e.target.value,
-                })
+                setFormData({ ...formData, city: e.target.value })
               }
               className="w-full p-4 bg-black border border-white/10 rounded"
             >
@@ -242,10 +232,7 @@ export const OrderSection = ({
             <textarea
               value={formData.address}
               onChange={(e) =>
-                setFormData({
-                  ...formData,
-                  address: e.target.value,
-                })
+                setFormData({ ...formData, address: e.target.value })
               }
               placeholder="Delivery Address"
               className="w-full p-4 bg-white/5 border border-white/10 rounded"
@@ -260,18 +247,15 @@ export const OrderSection = ({
               </h3>
 
               <div className="space-y-4">
-                {cart.length === 0 ? (
+                {safeCart.length === 0 ? (
                   <p className="text-white/40">No fragrances selected</p>
                 ) : (
-                  cart.map((p) => (
+                  safeCart.map((p) => (
                     <div key={p.id} className="flex justify-between">
                       <div>
                         {p.name}
                         <div className="text-gold text-xs">
-                          Rs.{" "}
-                          {(
-                            Number(p.price) * (Number(p.qty) || 1)
-                          ).toLocaleString()}
+                          Rs. {(p.price * (p.qty || 1)).toLocaleString()}
                         </div>
                       </div>
                     </div>
@@ -288,7 +272,7 @@ export const OrderSection = ({
 
               <button
                 onClick={handleSubmit}
-                disabled={loading || cart.length === 0}
+                disabled={loading || safeCart.length === 0}
                 className="w-full mt-6 bg-gold text-black p-4 rounded"
               >
                 {loading ? "Processing..." : "Confirm Order"}
