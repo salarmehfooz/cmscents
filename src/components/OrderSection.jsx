@@ -24,11 +24,10 @@ export const OrderSection = ({
 
   const selectedProducts = cart;
 
+  /* ---------------- SAFE TOTAL (NO NaN EVER) ---------------- */
   const totalAmount = selectedProducts.reduce((sum, p) => {
-    const price = Number(p.price);
-    const qty = Number(p.qty) || 1;
-
-    if (isNaN(price)) return sum;
+    const price = Number(p.price) || 0;
+    const qty = Number(p.qty) > 0 ? Number(p.qty) : 1;
 
     return sum + price * qty;
   }, 0);
@@ -42,7 +41,9 @@ export const OrderSection = ({
 
     if (exists) {
       updated = cart.map((item) =>
-        item.id === product.id ? { ...item, qty: (item.qty || 1) + 1 } : item,
+        item.id === product.id
+          ? { ...item, qty: Number(item.qty || 1) + 1 }
+          : item,
       );
     } else {
       updated = [...cart, { ...product, qty: 1 }];
@@ -59,7 +60,7 @@ export const OrderSection = ({
       .map((item) => {
         if (item.id !== product.id) return item;
 
-        const newQty = (item.qty || 1) - 1;
+        const newQty = Number(item.qty || 1) - 1;
         return newQty > 0 ? { ...item, qty: newQty } : null;
       })
       .filter(Boolean);
@@ -91,7 +92,7 @@ export const OrderSection = ({
       city: cityValue,
       address: formData.address,
       products: selectedProducts
-        .map((p) => `${p.name} (x${p.qty || 1})`)
+        .map((p) => `${p.name} (x${Number(p.qty || 1)})`)
         .join(", "),
       total: `Rs. ${totalAmount.toLocaleString()}`,
       payment: formData.payment,
@@ -126,6 +127,7 @@ export const OrderSection = ({
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(201,168,76,0.08),transparent_60%)]"></div>
 
       <div className="max-w-[1380px] mx-auto px-5 md:px-[60px] relative z-10">
+        {/* HEADER */}
         <div className="text-center mb-16">
           <p className="sec-eyebrow text-gold/80 tracking-[6px]">
             ◆ Place Your Order ◆
@@ -136,7 +138,9 @@ export const OrderSection = ({
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-12">
+          {/* LEFT */}
           <motion.div className="space-y-10">
+            {/* PRODUCTS */}
             <div>
               <label className="text-[10px] tracking-[5px] uppercase text-gold/70">
                 Select Fragrance(s)
@@ -145,7 +149,7 @@ export const OrderSection = ({
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
                 {PRODS.map((p) => {
                   const inCart = pickedIds.has(p.id);
-                  const qty = cart.find((c) => c.id === p.id)?.qty || 0;
+                  const qty = Number(cart.find((c) => c.id === p.id)?.qty) || 0;
 
                   return (
                     <div
@@ -200,6 +204,7 @@ export const OrderSection = ({
               </div>
             </div>
 
+            {/* FORM */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               {["name", "phone"].map((field) => (
                 <input
@@ -247,6 +252,7 @@ export const OrderSection = ({
             />
           </motion.div>
 
+          {/* RIGHT */}
           <motion.div className="sticky top-[120px]">
             <div className="p-8 rounded-2xl border border-gold/15 bg-white/5">
               <h3 className="text-gold uppercase text-xs tracking-[4px] mb-6">
@@ -262,7 +268,10 @@ export const OrderSection = ({
                       <div>
                         {p.name}
                         <div className="text-gold text-xs">
-                          Rs. {(p.price * (p.qty || 1)).toLocaleString()}
+                          Rs.{" "}
+                          {(
+                            Number(p.price) * (Number(p.qty) || 1)
+                          ).toLocaleString()}
                         </div>
                       </div>
                     </div>
