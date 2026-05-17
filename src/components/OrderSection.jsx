@@ -221,7 +221,7 @@ export const OrderSection = ({
               onChange={(e) =>
                 setFormData({ ...formData, city: e.target.value })
               }
-              className="w-full p-4 bg-white/5 border border-white/10 text-white rounded-xl"
+              className="w-full p-4 bg-white/5 border border-white/10 text-black rounded-xl"
             >
               <option value="">Select City</option>
               {CITIES.map((c) => (
@@ -237,7 +237,7 @@ export const OrderSection = ({
                 setFormData({ ...formData, address: e.target.value })
               }
               placeholder="Delivery Address"
-              className="w-full p-4 bg-white/5 border border-white/10 text-white rounded-xl"
+              className="w-full p-4 bg-white/5 border border-white/10 text-black rounded-xl"
             />
 
             {/* PAYMENT */}
@@ -251,7 +251,7 @@ export const OrderSection = ({
                 onChange={(e) =>
                   setFormData({ ...formData, payment: e.target.value })
                 }
-                className="w-full mt-3 p-4 bg-white/5 border border-white/10 text-white rounded-xl"
+                className="w-full mt-3 p-4 bg-white/5 border border-white/10 text-black rounded-xl"
               >
                 <option value="COD">Cash on Delivery</option>
                 <option value="Card">EasyPaisa / JazzCash</option>
