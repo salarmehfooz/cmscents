@@ -11,7 +11,7 @@ export const OrderSection = ({
   const safeCart = (cart || []).map((p) => ({
     ...p,
     price: Number(p.price) || 0,
-    qty: Number(p.qty) > 0 ? Number(p.qty) : 0,
+    qty: Number(p.qty) > 0 ? Number(p.qty) : 1,
   }));
 
   const pickedIds = new Set(safeCart.map((item) => item.id));
@@ -28,23 +28,21 @@ export const OrderSection = ({
 
   const [loading, setLoading] = useState(false);
 
-  /* ---------------- SAFE TOTAL (NO NaN EVER) ---------------- */
+  /* ---------------- TOTAL (SAFE) ---------------- */
   const totalAmount = safeCart.reduce((sum, p) => {
     const qty = p.qty > 0 ? p.qty : 1;
     return sum + p.price * qty;
   }, 0);
 
-  /* ---------------- FIXED QTY LOGIC ---------------- */
-
+  /* ---------------- QTY LOGIC ---------------- */
   const increaseQty = (product) => {
     const exists = safeCart.find((item) => item.id === product.id);
 
     let updated;
-
     if (exists) {
       updated = safeCart.map((item) =>
         item.id === product.id
-          ? { ...item, qty: Number(item.qty || 1) + 1 }
+          ? { ...item, qty: (Number(item.qty) || 1) + 1 }
           : item,
       );
     } else {
@@ -62,7 +60,7 @@ export const OrderSection = ({
       .map((item) => {
         if (item.id !== product.id) return item;
 
-        const newQty = Number(item.qty || 1) - 1;
+        const newQty = (Number(item.qty) || 1) - 1;
         return newQty > 0 ? { ...item, qty: newQty } : null;
       })
       .filter(Boolean);
@@ -94,9 +92,9 @@ export const OrderSection = ({
       phone: formData.phone,
       city: cityValue,
       address: formData.address,
+      payment: formData.payment, // ✅ RESTORED
       products: safeCart.map((p) => `${p.name} (x${p.qty || 1})`).join(", "),
       total: `Rs. ${totalAmount.toLocaleString()}`,
-      payment: formData.payment,
       note: formData.note || "—",
     };
 
@@ -141,6 +139,7 @@ export const OrderSection = ({
         <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-12">
           {/* LEFT */}
           <motion.div className="space-y-10">
+            {/* PRODUCTS */}
             <div>
               <label className="text-[10px] tracking-[5px] uppercase text-gold/70">
                 Select Fragrance(s)
@@ -154,23 +153,25 @@ export const OrderSection = ({
                   return (
                     <div
                       key={p.id}
-                      className="group p-4 rounded-xl border bg-white/5 border-white/10"
+                      className={`group p-4 rounded-xl border backdrop-blur-md transition-all ${
+                        pickedIds.has(p.id)
+                          ? "bg-white/10 border-gold/40"
+                          : "bg-white/5 border-white/10"
+                      }`}
                     >
                       <div className="flex justify-between items-start">
-                        <div>
-                          <div
-                            onClick={() => increaseQty(p)}
-                            className="cursor-pointer"
-                          >
-                            <div className="font-display text-white text-sm tracking-[1px]">
-                              {p.name}
-                            </div>
-                            <div className="text-[10px] text-white/40 uppercase tracking-[2px]">
-                              {p.sub}
-                            </div>
-                            <div className="text-gold text-xs mt-1">
-                              Rs. {p.price}
-                            </div>
+                        <div
+                          onClick={() => increaseQty(p)}
+                          className="cursor-pointer"
+                        >
+                          <div className="font-display text-white text-sm">
+                            {p.name}
+                          </div>
+                          <div className="text-[10px] text-white/40 uppercase">
+                            {p.sub}
+                          </div>
+                          <div className="text-gold text-xs mt-1">
+                            Rs. {p.price}
                           </div>
                         </div>
 
@@ -215,6 +216,7 @@ export const OrderSection = ({
               ))}
             </div>
 
+            {/* CITY */}
             <select
               value={formData.city}
               onChange={(e) =>
@@ -229,6 +231,7 @@ export const OrderSection = ({
               <option value="Other">Other</option>
             </select>
 
+            {/* ADDRESS */}
             <textarea
               value={formData.address}
               onChange={(e) =>
@@ -237,6 +240,25 @@ export const OrderSection = ({
               placeholder="Delivery Address"
               className="w-full p-4 bg-white/5 border border-white/10 rounded"
             />
+
+            {/* PAYMENT METHOD (RESTORED) */}
+            <div>
+              <label className="text-[10px] tracking-[5px] uppercase text-gold/70">
+                Payment Method
+              </label>
+
+              <select
+                value={formData.payment}
+                onChange={(e) =>
+                  setFormData({ ...formData, payment: e.target.value })
+                }
+                className="w-full mt-3 p-4 bg-black border border-white/10 rounded text-white"
+              >
+                <option value="COD">Cash on Delivery</option>
+                <option value="Card">Easy Paisa/ Jazzcash</option>
+                <option value="Bank Transfer">Bank Transfer</option>
+              </select>
+            </div>
           </motion.div>
 
           {/* RIGHT */}
@@ -255,7 +277,7 @@ export const OrderSection = ({
                       <div>
                         {p.name}
                         <div className="text-gold text-xs">
-                          Rs. {(p.price * (p.qty || 1)).toLocaleString()}
+                          Rs. {(p.price * p.qty).toLocaleString()}
                         </div>
                       </div>
                     </div>
