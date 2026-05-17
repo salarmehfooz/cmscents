@@ -24,9 +24,9 @@ export const OrderSection = ({
 
   const selectedProducts = cart;
 
-  /* ---------------- FIX 1: SAFE TOTAL CALC (prevents NaN) ---------------- */
+  /* ---------------- SAFE TOTAL (fix NaN) ---------------- */
   const totalAmount = selectedProducts.reduce((sum, p) => {
-    const price = Number(String(p.price).replace(/,/g, ""));
+    const price = Number(p.price);
     const qty = Number(p.qty) || 1;
 
     if (isNaN(price)) return sum;
@@ -34,26 +34,32 @@ export const OrderSection = ({
     return sum + price * qty;
   }, 0);
 
-  /* ---------------- FIX 2: SAFE QTY INCREASE/DECREASE ---------------- */
-  const increaseQty = (id) => {
-    const updated = cart.map((item) =>
-      item.id === id
-        ? { ...item, qty: (Number(item.qty) || 1) + 1 }
-        : item
-    );
-    onToggleProduct(updated, true);
+  /* ---------------- FIX: QTY IN PRODUCT GRID ---------------- */
+  const increaseQty = (product) => {
+    const exists = cart.find((item) => item.id === product.id);
+
+    if (exists) {
+      onToggleProduct(
+        cart.map((item) =>
+          item.id === product.id ? { ...item, qty: (item.qty || 1) + 1 } : item,
+        ),
+      );
+    } else {
+      onToggleProduct([...cart, { ...product, qty: 1 }]);
+    }
   };
 
-  const decreaseQty = (id) => {
+  const decreaseQty = (product) => {
+    const exists = cart.find((item) => item.id === product.id);
+    if (!exists) return;
+
     const updated = cart
       .map((item) =>
-        item.id === id
-          ? { ...item, qty: (Number(item.qty) || 1) - 1 }
-          : item
+        item.id === product.id ? { ...item, qty: (item.qty || 1) - 1 } : item,
       )
-      .filter((item) => (Number(item.qty) || 1) > 0);
+      .filter((item) => (item.qty || 1) > 0);
 
-    onToggleProduct(updated, true);
+    onToggleProduct(updated);
   };
 
   const handleSubmit = async () => {
@@ -62,12 +68,10 @@ export const OrderSection = ({
 
     if (cart.length === 0)
       return showToast("Please select at least one fragrance");
-    if (!formData.name.trim())
-      return showToast("Please enter your full name");
+    if (!formData.name.trim()) return showToast("Please enter your full name");
     if (!formData.phone.trim())
       return showToast("Please enter your phone number");
-    if (!cityValue.trim())
-      return showToast("Please select or enter your city");
+    if (!cityValue.trim()) return showToast("Please select or enter your city");
     if (!formData.address.trim())
       return showToast("Please enter your delivery address");
 
@@ -84,10 +88,7 @@ export const OrderSection = ({
       products: selectedProducts
         .map((p) => `${p.name} (x${p.qty || 1})`)
         .join(", "),
-
-      /* FIXED TOTAL */
       total: `Rs. ${totalAmount.toLocaleString()}`,
-
       payment: formData.payment,
       note: formData.note || "—",
     };
@@ -120,8 +121,7 @@ export const OrderSection = ({
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(201,168,76,0.08),transparent_60%)]"></div>
 
       <div className="max-w-[1380px] mx-auto px-5 md:px-[60px] relative z-10">
-
-        {/* HEADER (UNCHANGED) */}
+        {/* HEADER */}
         <div className="text-center mb-16">
           <p className="sec-eyebrow text-gold/80 tracking-[6px]">
             ◆ Place Your Order ◆
@@ -132,15 +132,8 @@ export const OrderSection = ({
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-12">
-
-          {/* LEFT (UNCHANGED EXCEPT SAFE NUMBER USAGE IF NEEDED) */}
-          <motion.div
-            initial={{ opacity: 0, x: -40 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            className="space-y-10"
-          >
-
+          {/* LEFT */}
+          <motion.div className="space-y-10">
             {/* PRODUCTS */}
             <div>
               <label className="text-[10px] tracking-[5px] uppercase text-gold/70">
@@ -148,43 +141,62 @@ export const OrderSection = ({
               </label>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
-                {PRODS.map((p) => (
-                  <div
-                    key={p.id}
-                    onClick={() => onToggleProduct(p)}
-                    className={`group cursor-pointer p-4 rounded-xl border transition-all backdrop-blur-md ${
-                      pickedIds.has(p.id)
-                        ? "bg-white/10 border-gold/40 shadow-[0_0_25px_rgba(201,168,76,0.12)]"
-                        : "bg-white/5 border-white/10 hover:border-gold/30"
-                    }`}
-                  >
-                    <div className="flex items-center gap-4">
-                      <div
-                        className={`w-4 h-4 rounded-full border flex items-center justify-center ${
-                          pickedIds.has(p.id)
-                            ? "bg-gold border-gold"
-                            : "border-gold/40"
-                        }`}
-                      >
-                        {pickedIds.has(p.id) && (
-                          <div className="w-1.5 h-1.5 bg-black rounded-full" />
-                        )}
-                      </div>
+                {PRODS.map((p) => {
+                  const inCart = pickedIds.has(p.id);
+                  const qty = cart.find((c) => c.id === p.id)?.qty || 0;
 
-                      <div>
-                        <div className="font-display text-white text-sm tracking-[1px]">
-                          {p.name}
+                  return (
+                    <div
+                      key={p.id}
+                      className={`group p-4 rounded-xl border transition-all backdrop-blur-md ${
+                        inCart
+                          ? "bg-white/10 border-gold/40"
+                          : "bg-white/5 border-white/10"
+                      }`}
+                    >
+                      <div className="flex justify-between items-start">
+                        {/* PRODUCT INFO */}
+                        <div>
+                          <div
+                            onClick={() => increaseQty(p)}
+                            className="cursor-pointer"
+                          >
+                            <div className="font-display text-white text-sm tracking-[1px]">
+                              {p.name}
+                            </div>
+                            <div className="text-[10px] text-white/40 uppercase tracking-[2px]">
+                              {p.sub}
+                            </div>
+                            <div className="text-gold text-xs mt-1">
+                              Rs. {p.price}
+                            </div>
+                          </div>
                         </div>
-                        <div className="text-[10px] text-white/40 uppercase tracking-[2px]">
-                          {p.sub}
-                        </div>
-                        <div className="text-gold text-xs mt-1">
-                          Rs. {p.price}
+
+                        {/* QTY CONTROL (NEW) */}
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={() => decreaseQty(p)}
+                            className="w-7 h-7 bg-white/10 rounded"
+                          >
+                            -
+                          </button>
+
+                          <span className="text-white w-5 text-center">
+                            {qty}
+                          </span>
+
+                          <button
+                            onClick={() => increaseQty(p)}
+                            className="w-7 h-7 bg-white/10 rounded"
+                          >
+                            +
+                          </button>
                         </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
 
@@ -193,137 +205,90 @@ export const OrderSection = ({
               {["name", "phone"].map((field) => (
                 <input
                   key={field}
-                  type="text"
                   value={formData[field]}
                   onChange={(e) =>
-                    setFormData({ ...formData, [field]: e.target.value })
+                    setFormData({
+                      ...formData,
+                      [field]: e.target.value,
+                    })
                   }
                   placeholder={field === "name" ? "Full Name" : "Phone Number"}
-                  className="bg-white/5 border border-white/10 text-white p-4 rounded-xl outline-none focus:border-gold/40 focus:bg-white/10 placeholder:text-white/30"
+                  className="bg-white/5 border border-white/10 text-white p-4 rounded-xl"
                 />
               ))}
             </div>
 
             {/* CITY (UNCHANGED) */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              <select
-                value={formData.city}
-                onChange={(e) =>
-                  setFormData({ ...formData, city: e.target.value })
-                }
-                className="bg-black/60 border border-white/10 text-white p-4 rounded-xl focus:border-gold/40 outline-none"
-              >
-                <option value="">Select City</option>
-                {CITIES.map((c) => (
-                  <option key={c} value={c} className="text-black">
-                    {c}
-                  </option>
-                ))}
-                <option value="Other" className="text-black">
-                  Other
-                </option>
-              </select>
-
-              {formData.city === "Other" && (
-                <input
-                  value={formData.cityOther}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      cityOther: e.target.value,
-                    })
-                  }
-                  placeholder="Enter City"
-                  className="bg-white/5 border border-white/10 text-white p-4 rounded-xl focus:border-gold/40 outline-none"
-                />
-              )}
-            </div>
-
-            {/* PAYMENT (UNCHANGED) */}
-            <div className="grid grid-cols-2 gap-4">
-              {["COD", "Bank Transfer"].map((method) => (
-                <button
-                  key={method}
-                  type="button"
-                  onClick={() =>
-                    setFormData({ ...formData, payment: method })
-                  }
-                  className={`p-4 rounded-xl border text-sm uppercase tracking-[2px] transition ${
-                    formData.payment === method
-                      ? "bg-gold text-black border-gold"
-                      : "bg-white/5 text-white border-white/10"
-                  }`}
-                >
-                  {method}
-                </button>
+            <select
+              value={formData.city}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  city: e.target.value,
+                })
+              }
+              className="w-full p-4 bg-black border border-white/10 rounded"
+            >
+              <option value="">Select City</option>
+              {CITIES.map((c) => (
+                <option key={c}>{c}</option>
               ))}
-            </div>
+              <option value="Other">Other</option>
+            </select>
 
             <textarea
               value={formData.address}
               onChange={(e) =>
-                setFormData({ ...formData, address: e.target.value })
+                setFormData({
+                  ...formData,
+                  address: e.target.value,
+                })
               }
               placeholder="Delivery Address"
-              className="w-full bg-white/5 border border-white/10 text-white p-4 rounded-xl min-h-[110px] focus:border-gold/40 outline-none"
+              className="w-full p-4 bg-white/5 border border-white/10 rounded"
             />
           </motion.div>
 
           {/* RIGHT */}
-          <motion.div
-            className="sticky top-[120px]"
-          >
-            <div className="p-8 rounded-2xl border border-gold/15 bg-white/5 backdrop-blur-md">
-
-              <h3 className="text-gold text-[11px] tracking-[5px] uppercase mb-8">
+          <motion.div className="sticky top-[120px]">
+            <div className="p-8 rounded-2xl border border-gold/15 bg-white/5">
+              <h3 className="text-gold uppercase text-xs tracking-[4px] mb-6">
                 Order Summary
               </h3>
 
-              <div className="space-y-4 mb-8">
-                {selectedProducts.length === 0 ? (
-                  <p className="text-white/40 italic text-sm">
-                    No fragrances selected
-                  </p>
+              <div className="space-y-4">
+                {cart.length === 0 ? (
+                  <p className="text-white/40">No fragrances selected</p>
                 ) : (
-                  selectedProducts.map((p) => (
-                    <div key={p.id} className="flex justify-between items-center">
+                  cart.map((p) => (
+                    <div key={p.id} className="flex justify-between">
                       <div>
-                        <div className="text-white/70 text-sm">{p.name}</div>
+                        {p.name}
                         <div className="text-gold text-xs">
-                          Rs. {(Number(p.price) * (p.qty || 1)).toLocaleString()}
+                          Rs. {(p.price * (p.qty || 1)).toLocaleString()}
                         </div>
-                      </div>
-
-                      <div className="flex items-center gap-3">
-                        <button onClick={() => decreaseQty(p.id)}>-</button>
-                        <span>{p.qty || 1}</span>
-                        <button onClick={() => increaseQty(p.id)}>+</button>
                       </div>
                     </div>
                   ))
                 )}
               </div>
 
-              <div className="border-t border-white/10 pt-6 flex justify-between">
-                <span className="text-white/60 uppercase text-xs tracking-[3px]">
-                  Total
-                </span>
-                <span className="text-2xl text-gold font-display">
+              <div className="border-t border-white/10 mt-6 pt-6 flex justify-between">
+                <span>Total</span>
+                <span className="text-gold">
                   Rs. {totalAmount.toLocaleString()}
                 </span>
               </div>
 
               <button
                 onClick={handleSubmit}
-                disabled={loading || selectedProducts.length === 0}
-                className="w-full mt-8 bg-gold text-black py-4 rounded-full uppercase tracking-[3px] text-sm"
+                disabled={loading || cart.length === 0}
+                className="w-full mt-6 bg-gold text-black p-4 rounded"
               >
                 {loading ? "Processing..." : "Confirm Order"}
               </button>
-
             </div>
           </motion.div>
-
         </div>
       </div>
     </section>
