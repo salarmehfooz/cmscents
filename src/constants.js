@@ -84,4 +84,5 @@ export const CITIES = [
   "Sukkur",
 ];
 
-export const SHEET_URL = "";
+export const SHEET_URL =
+  "https://script.google.com/macros/s/AKfycbzJ-e6FbB2zm2FMgSjBQ3lUu19z0hn1MmtlilHSrzUP2kuuKLVN1_s0B2g5n6fO1EEVrA/exec";

@@ -64,7 +64,6 @@ export const OrderSection = ({
       if (SHEET_URL) {
         await fetch(SHEET_URL, {
           method: "POST",
-          mode: "no-cors",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),
         });
