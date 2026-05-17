@@ -28,13 +28,11 @@ export const OrderSection = ({
 
   const [loading, setLoading] = useState(false);
 
-  /* ---------------- TOTAL (SAFE) ---------------- */
   const totalAmount = safeCart.reduce((sum, p) => {
     const qty = p.qty > 0 ? p.qty : 1;
     return sum + p.price * qty;
   }, 0);
 
-  /* ---------------- QTY LOGIC ---------------- */
   const increaseQty = (product) => {
     const exists = safeCart.find((item) => item.id === product.id);
 
@@ -68,7 +66,6 @@ export const OrderSection = ({
     onToggleProduct(updated);
   };
 
-  /* ---------------- SUBMIT ---------------- */
   const handleSubmit = async () => {
     const cityValue =
       formData.city === "Other" ? formData.cityOther : formData.city;
@@ -92,8 +89,8 @@ export const OrderSection = ({
       phone: formData.phone,
       city: cityValue,
       address: formData.address,
-      payment: formData.payment, // ✅ RESTORED
-      products: safeCart.map((p) => `${p.name} (x${p.qty || 1})`).join(", "),
+      payment: formData.payment,
+      products: safeCart.map((p) => `${p.name} (x${p.qty})`).join(", "),
       total: `Rs. ${totalAmount.toLocaleString()}`,
       note: formData.note || "—",
     };
@@ -118,20 +115,18 @@ export const OrderSection = ({
   };
 
   return (
-    <section
-      id="order"
-      className="bg-gradient-to-b from-[#070707] via-[#0b0b0b] to-[#050505] py-[120px] relative overflow-hidden"
-    >
-      <div className="absolute inset-0 bg-noise opacity-[0.04] pointer-events-none"></div>
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(201,168,76,0.08),transparent_60%)]"></div>
+    <section className="relative py-[120px] bg-gradient-to-b from-black via-[#070707] to-black overflow-hidden">
+      {/* glow background */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(201,168,76,0.10),transparent_60%)]" />
+      <div className="absolute inset-0 opacity-[0.03] bg-noise pointer-events-none" />
 
       <div className="max-w-[1380px] mx-auto px-5 md:px-[60px] relative z-10">
         {/* HEADER */}
         <div className="text-center mb-16">
-          <p className="sec-eyebrow text-gold/80 tracking-[6px]">
+          <p className="text-gold/70 tracking-[6px] text-[11px] uppercase">
             ◆ Place Your Order ◆
           </p>
-          <h2 className="sec-title text-white mt-3">
+          <h2 className="text-white text-3xl md:text-4xl font-light mt-3 tracking-wide">
             Complete Your Experience
           </h2>
         </div>
@@ -141,8 +136,8 @@ export const OrderSection = ({
           <motion.div className="space-y-10">
             {/* PRODUCTS */}
             <div>
-              <label className="text-[10px] tracking-[5px] uppercase text-gold/70">
-                Select Fragrance(s)
+              <label className="text-[10px] tracking-[5px] uppercase text-gold/60">
+                Select Fragrances
               </label>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
@@ -153,18 +148,20 @@ export const OrderSection = ({
                   return (
                     <div
                       key={p.id}
-                      className={`group p-4 rounded-xl border backdrop-blur-md transition-all ${
+                      className={`p-4 rounded-xl border backdrop-blur-md transition-all duration-300
+                      ${
                         pickedIds.has(p.id)
-                          ? "bg-white/10 border-gold/40"
-                          : "bg-white/5 border-white/10"
+                          ? "bg-white/10 border-gold/40 shadow-[0_0_25px_rgba(201,168,76,0.08)]"
+                          : "bg-white/5 border-white/10 hover:border-gold/20"
                       }`}
                     >
                       <div className="flex justify-between items-start">
+                        {/* INFO */}
                         <div
                           onClick={() => increaseQty(p)}
                           className="cursor-pointer"
                         >
-                          <div className="font-display text-white text-sm">
+                          <div className="text-white text-sm tracking-wide">
                             {p.name}
                           </div>
                           <div className="text-[10px] text-white/40 uppercase">
@@ -175,21 +172,22 @@ export const OrderSection = ({
                           </div>
                         </div>
 
+                        {/* QTY */}
                         <div className="flex items-center gap-2">
                           <button
                             onClick={() => decreaseQty(p)}
-                            className="w-7 h-7 bg-white/10 rounded"
+                            className="w-7 h-7 rounded bg-white/10 text-white hover:bg-gold/20 transition"
                           >
                             -
                           </button>
 
-                          <span className="text-white w-5 text-center">
+                          <span className="text-white w-5 text-center text-sm">
                             {qty}
                           </span>
 
                           <button
                             onClick={() => increaseQty(p)}
-                            className="w-7 h-7 bg-white/10 rounded"
+                            className="w-7 h-7 rounded bg-white/10 text-white hover:bg-gold/20 transition"
                           >
                             +
                           </button>
@@ -211,7 +209,8 @@ export const OrderSection = ({
                     setFormData({ ...formData, [field]: e.target.value })
                   }
                   placeholder={field === "name" ? "Full Name" : "Phone Number"}
-                  className="bg-white/5 border border-white/10 text-white p-4 rounded-xl"
+                  className="bg-white/5 border border-white/10 text-white p-4 rounded-xl
+                             focus:border-gold/40 focus:outline-none"
                 />
               ))}
             </div>
@@ -222,7 +221,7 @@ export const OrderSection = ({
               onChange={(e) =>
                 setFormData({ ...formData, city: e.target.value })
               }
-              className="w-full p-4 bg-black border border-white/10 rounded"
+              className="w-full p-4 bg-white/5 border border-white/10 text-white rounded-xl"
             >
               <option value="">Select City</option>
               {CITIES.map((c) => (
@@ -238,12 +237,12 @@ export const OrderSection = ({
                 setFormData({ ...formData, address: e.target.value })
               }
               placeholder="Delivery Address"
-              className="w-full p-4 bg-white/5 border border-white/10 rounded"
+              className="w-full p-4 bg-white/5 border border-white/10 text-white rounded-xl"
             />
 
-            {/* PAYMENT METHOD (RESTORED) */}
+            {/* PAYMENT */}
             <div>
-              <label className="text-[10px] tracking-[5px] uppercase text-gold/70">
+              <label className="text-[10px] tracking-[5px] uppercase text-gold/60">
                 Payment Method
               </label>
 
@@ -252,10 +251,10 @@ export const OrderSection = ({
                 onChange={(e) =>
                   setFormData({ ...formData, payment: e.target.value })
                 }
-                className="w-full mt-3 p-4 bg-black border border-white/10 rounded text-white"
+                className="w-full mt-3 p-4 bg-white/5 border border-white/10 text-white rounded-xl"
               >
                 <option value="COD">Cash on Delivery</option>
-                <option value="Card">Easy Paisa/ Jazzcash</option>
+                <option value="Card">EasyPaisa / JazzCash</option>
                 <option value="Bank Transfer">Bank Transfer</option>
               </select>
             </div>
@@ -263,8 +262,8 @@ export const OrderSection = ({
 
           {/* RIGHT */}
           <motion.div className="sticky top-[120px]">
-            <div className="p-8 rounded-2xl border border-gold/15 bg-white/5">
-              <h3 className="text-gold uppercase text-xs tracking-[4px] mb-6">
+            <div className="p-8 rounded-2xl border border-gold/20 bg-white/5 backdrop-blur-xl">
+              <h3 className="text-gold text-xs tracking-[5px] uppercase mb-6">
                 Order Summary
               </h3>
 
@@ -273,21 +272,19 @@ export const OrderSection = ({
                   <p className="text-white/40">No fragrances selected</p>
                 ) : (
                   safeCart.map((p) => (
-                    <div key={p.id} className="flex justify-between">
-                      <div>
-                        {p.name}
-                        <div className="text-gold text-xs">
-                          Rs. {(p.price * p.qty).toLocaleString()}
-                        </div>
-                      </div>
+                    <div key={p.id} className="flex justify-between text-sm">
+                      <span className="text-white/80">{p.name}</span>
+                      <span className="text-gold">
+                        Rs. {(p.price * p.qty).toLocaleString()}
+                      </span>
                     </div>
                   ))
                 )}
               </div>
 
               <div className="border-t border-white/10 mt-6 pt-6 flex justify-between">
-                <span>Total</span>
-                <span className="text-gold">
+                <span className="text-white/60">Total</span>
+                <span className="text-gold text-lg">
                   Rs. {totalAmount.toLocaleString()}
                 </span>
               </div>
@@ -295,7 +292,8 @@ export const OrderSection = ({
               <button
                 onClick={handleSubmit}
                 disabled={loading || safeCart.length === 0}
-                className="w-full mt-6 bg-gold text-black p-4 rounded"
+                className="w-full mt-6 bg-gold text-black py-4 rounded-xl
+                           hover:scale-[1.02] transition font-medium"
               >
                 {loading ? "Processing..." : "Confirm Order"}
               </button>
