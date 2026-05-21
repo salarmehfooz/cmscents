@@ -1,0 +1,175 @@
+export const PRODUCTS = [
+  {
+    id: 1,
+    name: "Dynamic Mist",
+    sub: "Pour Homme",
+    category: "Fresh & Aquatic",
+    price: 2800,
+    lbl: "bg-linear-to-br from-[#0d1520] to-[#162030]",
+    icon: "💧",
+    notes: ["Bergamot", "Geranium", "Cedarwood"],
+    desc: "A burst of ocean breeze and citrus with a warm musky base.",
+    longDesc:
+      "Experience the invigorating power of the ocean with Dynamic Mist. This fragrance captures the essence of a windswept coastline, where the bracing salt air meets the zesty brightness of Mediterranean bergamot. As the scent settles, it reveals a heart of aromatic sage and geranium, eventually resting on a deep, masculine foundation of patchouli and cedarwood. Perfect for the active man who values freshness above all else.",
+    images: [
+      "https://images.unsplash.com/photo-1541604193435-2207f94672ca?auto=format&fit=crop&q=80&w=800",
+      "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&q=80&w=800",
+      "https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&q=80&w=800",
+    ],
+    reviews: [
+      {
+        id: "r1",
+        author: "Zaid A.",
+        rating: 5,
+        comment:
+          "Incredibly fresh! Lasts much longer than other aquatic scents.",
+        date: "2024-03-15",
+        location: "Karachi",
+      },
+      {
+        id: "r2",
+        author: "Omar S.",
+        rating: 4,
+        comment: "Great for the office. Subtle but noticeable.",
+        date: "2024-02-28",
+        location: "Lahore",
+      },
+    ],
+  },
+  {
+    id: 2,
+    name: "Tempest Noir",
+    sub: "Pour Homme",
+    category: "Dark & Intense",
+    price: 3200,
+    lbl: "bg-linear-to-br from-[#080808] to-[#141414]",
+    icon: "⚡",
+    notes: ["Black Pepper", "Leather", "Vanilla"],
+    desc: "Stormy, dramatic, and irresistibly intense. Black pepper and vetiver.",
+    longDesc:
+      "Tempest Noir is a fragrance of contradictions—at once fierce and sophisticated. It opens with an explosion of crushed black pepper and green cardamom, creating an immediate sense of mystery. The heart is dark and earthy, featuring Haitian vetiver and leather, while the base of charred vanilla and benzoin provides a lingering, smoky sweetness. It is the scent of a man who thrives in the shadows of the night.",
+    images: [
+      "https://images.unsplash.com/photo-1595425970377-c9703cf48b6d?auto=format&fit=crop&q=80&w=800",
+      "https://images.unsplash.com/photo-1583445095369-9c651e7e5d30?auto=format&fit=crop&q=80&w=800",
+      "https://images.unsplash.com/photo-1557170334-a7c3c40d002d?auto=format&fit=crop&q=80&w=800",
+    ],
+    reviews: [
+      {
+        id: "r3",
+        author: "Hamza K.",
+        rating: 5,
+        comment: "Bold and daring. Definitely a night-out fragrance.",
+        date: "2024-04-02",
+        location: "Islamabad",
+      },
+    ],
+  },
+  {
+    id: 3,
+    name: "Executive Code",
+    sub: "Pour Homme",
+    category: "Sophisticated",
+    price: 3000,
+    lbl: "bg-linear-to-br from-[#0c0c0c] to-[#181818]",
+    icon: "🏙️",
+    notes: ["Lavender", "Iris", "Sandalwood"],
+    desc: "Boardroom-ready elegance. Sandalwood and amber in perfect harmony.",
+    longDesc:
+      "Designed for the modern leader, Executive Code exudes confidence and poise. A clean opening of lavender and pink pepper transitions into a heart of refined iris and violet leaf. The dry-down is where this fragrance truly shines, with creamy sandalwood, rich amber, and a touch of musk providing a professional yet approachable aura that lasts from the morning briefing to the evening gala.",
+    images: [
+      "https://images.unsplash.com/photo-1523293182086-7651a899d37f?auto=format&fit=crop&q=80&w=800",
+      "https://images.unsplash.com/photo-1547881335-934c5625404d?auto=format&fit=crop&q=80&w=800",
+    ],
+    reviews: [
+      {
+        id: "r4",
+        author: "Usman R.",
+        rating: 5,
+        comment: "Commands respect. My go-to for client meetings.",
+        date: "2024-01-20",
+        location: "Islamabad",
+      },
+    ],
+  },
+  {
+    id: 4,
+    name: "Oud Royale",
+    sub: "Pour Homme",
+    category: "Oriental & Luxe",
+    price: 3500,
+    lbl: "bg-linear-to-br from-[#100e08] to-[#1a1508]",
+    icon: "🪵",
+    notes: ["Saffron", "Rose", "Agarwood"],
+    desc: "The king of orientals. Deep oud, rose, and sacred saffron.",
+    longDesc:
+      "Oud Royale is a tribute to the timeless luxury of the Middle East. It features the finest agarwood (oud), blended masterfully with the velvety richness of Turkish rose and the precious warmth of saffron. Notes of frankincense and burning resins add a spiritual depth, while a base of ambergris ensures a regal sillage. This is not just a perfume; it is a statement of royalty.",
+    images: [
+      "https://images.unsplash.com/photo-1590736704728-f4730bb30770?auto=format&fit=crop&q=80&w=800",
+      "https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&q=80&w=800",
+    ],
+    reviews: [
+      {
+        id: "r5",
+        author: "Ahmed K.",
+        rating: 5,
+        comment: "The best oud in Pakistan. Period.",
+        date: "2024-05-10",
+        location: "Lahore",
+      },
+    ],
+  },
+  {
+    id: 5,
+    name: "Velvet Éclat",
+    sub: "Pour Femme",
+    category: "Floral & Feminine",
+    price: 3000,
+    lbl: "bg-linear-to-br from-[#281020] to-[#3a1830]",
+    icon: "🌹",
+    notes: ["Lychee", "Peony", "White Musk"],
+    desc: "Radiant roses draped in velvet musk. Pure femininity.",
+    longDesc:
+      'Velvet Éclat is a celebration of contemporary femininity. It opens with the crystalline brightness of pear and lychee, quickly giving way to a heart of blooming Peony and Damask Rose. The fragrance is wrapped in a "velvet" accord of white musk and soft vanilla, creating a scent trail that is ethereal, soft, and profoundly elegant. It’s like wearing a bouquet of the world’s rarest flowers.',
+    images: [
+      "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&q=80&w=800",
+      "https://images.unsplash.com/photo-1512203530485-bc5013060614?auto=format&fit=crop&q=80&w=800",
+    ],
+    reviews: [
+      {
+        id: "r6",
+        author: "Sara M.",
+        rating: 5,
+        comment: "So elegant and soft. I get compliments everywhere!",
+        date: "2024-04-15",
+        location: "Karachi",
+      },
+    ],
+  },
+  {
+    id: 6,
+    name: "Citrus Elixir",
+    sub: "Pour Homme",
+    category: "Fresh & Vibrant",
+    price: 2800,
+    lbl: "bg-linear-to-br from-[#0a1408] to-[#0e1c0a]",
+    icon: "🍊",
+    notes: ["Lime", "Neroli", "Cedarwood"],
+    desc: "Zesty bergamot, lime, and neroli — the ultimate daytime freshness.",
+    longDesc:
+      "An explosion of solar energy in a bottle. Citrus Elixir is the ultimate antidote to early mornings and humid summer days. It features a triple-citrus opening of Sicilian lemon, lime, and bergamot, enhanced by the green crispness of mint and neroli. A heart of petitgrain adds a sophisticated botanical touch, while a light cedarwood base provides structure without weight. Pure, unadulterated vitality.",
+    images: [
+      "https://images.unsplash.com/photo-1616949114821-0370043878b7?auto=format&fit=crop&q=80&w=800",
+      "https://images.unsplash.com/photo-1515377905703-c4788e51af15?auto=format&fit=crop&q=80&w=800",
+    ],
+    reviews: [
+      {
+        id: "r7",
+        author: "Bilal T.",
+        rating: 4,
+        comment: "Super refreshing for Karachi summer!",
+        date: "2024-05-02",
+        location: "Karachi",
+      },
+    ],
+  },
+];

@@ -1,60 +1,109 @@
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
-import { Logo } from './Logo';
+import { useState, useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { ShoppingBag, Menu, X } from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
+import { toggleCart } from "../store/cartSlice";
+import { clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
 
-export const Navbar = ({ onOpenCart, cartCount }) => {
-  const [scrolled, setScrolled] = useState(false);
+function cn(...inputs) {
+  return twMerge(clsx(inputs));
+}
+
+export default function Navbar() {
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const location = useLocation();
+  const dispatch = useDispatch();
+  const cartItemsCount = useSelector((state) =>
+    state.cart.items.reduce((total, item) => total + item.quantity, 0),
+  );
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 60);
+      setIsScrolled(window.scrollY > 50);
     };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  return (
-    <nav 
-      className={`fixed top-0 left-0 right-0 z-[200] flex items-center justify-between px-5 md:px-[60px] transition-all duration-400 bg-black-rich border-b border-gold/20 ${
-        scrolled ? 'h-[75px] shadow-[0_4px_40px_rgba(0,0,0,0.5)]' : 'h-[90px]'
-      }`}
-    >
-      <a href="#" className="no-underline transition-transform hover:scale-105 active:scale-95">
-        <Logo size="sm" />
-      </a>
+  const navLinks = [
+    { name: "Collection", path: "/collection" },
+    { name: "Our Story", path: "/#about" },
+    { name: "Contact", path: "/contact" },
+  ];
 
-      <ul className="hidden md:flex gap-9 list-none">
-        {['Collection', 'Our Story', 'Order', 'Contact'].map((item) => (
-          <li key={item}>
-            <a 
-              href={`#${item.toLowerCase().replace(' ', '-')}`}
-              className="text-[10px] tracking-[3px] uppercase text-white/50 no-underline transition-colors relative pb-1 hover:text-gold after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:height-[1px] after:bg-gold after:transition-all hover:after:w-full"
+  return (
+    <nav
+      className={cn(
+        "glass-nav h-20 flex items-center justify-between px-6 md:px-12",
+        isScrolled && "shadow-md shadow-gold/10",
+      )}
+    >
+      {/* Mobile Menu Toggle */}
+      <button
+        className="md:hidden text-luxury-muted p-2"
+        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+      >
+        {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+      </button>
+
+      {/* Brand Logo */}
+      <Link to="/" className="flex flex-col items-center group">
+        <span className="font-display text-2xl tracking-[0.4em] text-gold group-hover:text-gold-dark transition-colors">
+          C.M
+        </span>
+        <span className="text-[10px] tracking-[0.4em] text-luxury-muted uppercase -mt-1">
+          Scents
+        </span>
+      </Link>
+
+      {/* Desktop Links */}
+      <ul className="hidden md:flex gap-10">
+        {navLinks.map((link) => (
+          <li key={link.name}>
+            <Link
+              to={link.path}
+              className={cn(
+                "text-[10px] tracking-[0.3em] uppercase text-luxury-muted hover:text-gold transition-colors font-medium",
+                location.pathname === link.path && "text-gold",
+              )}
             >
-              {item}
-            </a>
+              {link.name}
+            </Link>
           </li>
         ))}
       </ul>
 
+      {/* Actions */}
       <div className="flex items-center gap-4">
-        <button 
-          onClick={onOpenCart}
-          className="flex items-center gap-[10px] bg-transparent border border-gold/40 text-gold px-5 py-2 font-sans text-[10px] tracking-[3px] uppercase cursor-pointer transition-all hover:bg-gold hover:text-black-rich hover:border-gold"
+        <button
+          onClick={() => dispatch(toggleCart())}
+          className="flex items-center gap-3 bg-gold hover:bg-gold-dark text-white px-5 py-2.5 rounded-none text-[10px] tracking-[0.3em] uppercase font-bold transition-all hover:-translate-y-0.5"
         >
-          <span className="hidden sm:inline">♛</span> Cart
-          <AnimatePresence mode="popLayout">
-            <motion.span 
-              key={cartCount}
-              initial={{ scale: 0.5, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 1.5, opacity: 0 }}
-              className="bg-gold text-black-rich rounded-full w-[18px] height-[18px] text-[10px] flex items-center justify-center font-bold"
-            >
-              {cartCount}
-            </motion.span>
-          </AnimatePresence>
+          <span className="hidden sm:inline">♛ Cart</span>
+          <ShoppingBag size={14} className="sm:hidden" />
+          <span className="bg-white text-gold w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold">
+            {cartItemsCount}
+          </span>
         </button>
       </div>
+
+      {/* Mobile Menu Overlay */}
+      {isMobileMenuOpen && (
+        <div className="absolute top-20 left-0 w-full bg-luxury-bg border-b border-gold/10 p-8 flex flex-col gap-6 md:hidden animate-in fade-in slide-in-from-top-4 duration-300">
+          {navLinks.map((link) => (
+            <Link
+              key={link.name}
+              to={link.path}
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="text-sm tracking-[0.3em] uppercase text-luxury-muted active:text-gold font-medium"
+            >
+              {link.name}
+            </Link>
+          ))}
+        </div>
+      )}
     </nav>
   );
-};
+}

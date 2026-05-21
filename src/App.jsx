@@ -1,115 +1,60 @@
-import React, { useState } from "react";
-import { Navbar } from "./components/Navbar";
-import { Hero } from "./components/Hero";
-import { StatsBar } from "./components/StatsBar";
-import { ProductSection } from "./components/ProductSection";
-import { AboutSection } from "./components/AboutSection";
-import { Testimonials } from "./components/Testimonials";
-import { OrderSection } from "./components/OrderSection";
-import { ContactSection, Footer } from "./components/Footer";
-import { CartSidebar } from "./components/CartSidebar";
-import { SuccessModal, Toast } from "./components/UIFeedback";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Provider } from "react-redux";
+import { store } from "./store";
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
+import CartSidebar from "./components/CartSidebar";
+import Home from "./pages/Home";
+import Collection from "./pages/Collection";
+import ProductDetails from "./pages/ProductDetails";
+import Order from "./pages/Order";
+import HowToOrder from "./pages/HowToOrder";
+import Contact from "./pages/Contact";
+import ReturnPolicy from "./pages/ReturnPolicy";
+import Authenticity from "./pages/Authenticity";
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
+
+function ScrollToTop() {
+  const { pathname, hash } = useLocation();
+
+  useEffect(() => {
+    if (hash) {
+      const element = document.querySelector(hash);
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth" });
+        return;
+      }
+    }
+    window.scrollTo(0, 0);
+  }, [pathname, hash]);
+
+  return null;
+}
 
 export default function App() {
-  const [cart, setCart] = useState([]);
-  const [isCartOpen, setIsCartOpen] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [toastMsg, setToastMsg] = useState("");
-
-  /* ---------------- NORMALIZER ---------------- */
-  const normalizeCart = (cart) =>
-    (cart || [])
-      .map((p) => ({
-        ...p,
-        price: Number(p.price) || 0,
-        qty: Number(p.qty) > 0 ? Number(p.qty) : 0,
-      }))
-      .filter((p) => p.qty > 0);
-
-  const cartCount = cart.reduce(
-    (sum, item) => sum + (Number(item.qty) || 0),
-    0,
-  );
-
-  /* ---------------- ADD ---------------- */
-  const addToCart = (product) => {
-    setCart((prev) => {
-      const exists = prev.find((i) => i.id === product.id);
-
-      let updated;
-
-      if (exists) {
-        updated = prev.map((i) =>
-          i.id === product.id ? { ...i, qty: Number(i.qty || 1) + 1 } : i,
-        );
-      } else {
-        updated = [...prev, { ...product, qty: 1 }];
-      }
-
-      return normalizeCart(updated);
-    });
-
-    setIsCartOpen(true);
-    setToastMsg(`${product.name} added to cart`);
-  };
-
-  /* ---------------- UPDATE QTY ---------------- */
-  const updateCartQty = (id, delta) => {
-    setCart((prev) => {
-      const updated = prev
-        .map((i) =>
-          i.id === id ? { ...i, qty: Number(i.qty || 1) + delta } : i,
-        )
-        .filter((i) => (Number(i.qty) || 0) > 0);
-
-      return normalizeCart(updated);
-    });
-  };
-
-  /* ---------------- REMOVE ---------------- */
-  const removeFromCart = (id) => {
-    setCart((prev) => normalizeCart(prev.filter((i) => i.id !== id)));
-  };
-
   return (
-    <div className="min-h-screen bg-cream text-black-soft relative">
-      <Navbar onOpenCart={() => setIsCartOpen(true)} cartCount={cartCount} />
-
-      <main>
-        <Hero />
-        <StatsBar />
-
-        <ProductSection onAddToCart={addToCart} />
-
-        <AboutSection />
-        <Testimonials />
-
-        <OrderSection
-          cart={cart}
-          onToggleProduct={setCart}
-          onSuccess={() => setIsModalOpen(true)}
-          showToast={setToastMsg}
-        />
-
-        <ContactSection />
-      </main>
-
-      <Footer />
-
-      <CartSidebar
-        isOpen={isCartOpen}
-        onClose={() => setIsCartOpen(false)}
-        cart={cart}
-        onUpdateQty={updateCartQty}
-        onRemove={removeFromCart}
-      />
-
-      <SuccessModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-      />
-
-      <Toast msg={toastMsg} onClear={() => setToastMsg("")} />
-    </div>
+    <Provider store={store}>
+      <Router>
+        <ScrollToTop />
+        <div className="flex flex-col min-h-screen">
+          <Navbar />
+          <CartSidebar />
+          <main className="flex-grow">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/collection" element={<Collection />} />
+              <Route path="/product/:id" element={<ProductDetails />} />
+              <Route path="/order" element={<Order />} />
+              <Route path="/how-to-order" element={<HowToOrder />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/return-policy" element={<ReturnPolicy />} />
+              <Route path="/authenticity" element={<Authenticity />} />
+            </Routes>
+          </main>
+          <Footer />
+        </div>
+      </Router>
+    </Provider>
   );
 }

@@ -1,108 +1,51 @@
-import React from "react";
-import { motion } from "motion/react";
-import { Logo } from "./Logo";
+import { Link } from "react-router-dom";
+import {
+  Instagram,
+  Facebook,
+  Linkedin,
+  Mail,
+  Phone,
+  MapPin,
+} from "lucide-react";
 
-/* ================= CONTACT ================= */
-
-const contactCards = [
-  { icon: "📱", lbl: "WhatsApp", val: "+92 XXX XXXXXXX" },
-  { icon: "📦", lbl: "Delivery", val: "All Pakistan" },
-  { icon: "🕐", lbl: "Hours", val: "9AM – 10PM Daily" },
-  { icon: "📸", lbl: "Instagram", val: "@cmscents" },
-];
-
-export const ContactSection = () => {
+export default function Footer() {
   return (
-    <section
-      id="contact"
-      className="relative py-[110px] bg-gradient-to-b from-[#0b0b0b] via-[#090909] to-[#050505] overflow-hidden"
-    >
-      {/* gold ambient glow */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(201,168,76,0.12),transparent_60%)] pointer-events-none"></div>
-
-      <div className="max-w-[1380px] mx-auto px-5 md:px-[60px] relative z-10">
-        <motion.p className="sec-eyebrow text-gold">◆ Get In Touch ◆</motion.p>
-
-        <motion.h2 className="sec-title text-white">Contact Us</motion.h2>
-
-        <motion.p className="sec-sub text-white/50">
-          We’re here to assist you with your fragrance journey
-        </motion.p>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mt-14">
-          {contactCards.map((card, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: i * 0.1 }}
-              className="group relative p-8 text-center rounded-2xl
-                         bg-white/5 border border-white/10
-                         backdrop-blur-xl overflow-hidden
-                         hover:border-gold/30 transition"
-            >
-              {/* gold glow hover */}
-              <div
-                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition
-                              bg-[radial-gradient(circle,rgba(201,168,76,0.08),transparent_60%)]"
-              ></div>
-
-              <div className="text-2xl mb-4">{card.icon}</div>
-
-              <div className="text-[9px] tracking-[4px] text-gold uppercase mb-2">
-                {card.lbl}
-              </div>
-
-              <div className="font-display text-sm text-white/80">
-                {card.val}
-              </div>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-};
-
-/* ================= FOOTER ================= */
-
-export const Footer = () => {
-  return (
-    <footer className="relative bg-black-rich border-t border-white/10 overflow-hidden">
-      {/* subtle gold glow */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom,rgba(201,168,76,0.08),transparent_65%)]"></div>
-
-      <div
-        className="max-w-[1380px] mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[2fr_1fr_1fr_1fr]
-                      gap-14 px-5 md:px-[60px] py-[80px] relative z-10"
-      >
-        {/* BRAND */}
-        <div>
-          <Logo size="md" className="!items-start mb-6" />
-
-          <p className="font-serif italic text-[13px] text-white/40 leading-[1.9] mb-6">
-            Crafted to Leave an Impression. Each fragrance is a journey — from
-            first spritz to final lingering note.
-          </p>
-
-          <div className="text-[11px] text-white/25 leading-[2.2]">
-            <span className="text-gold text-[9px] tracking-[3px] uppercase block mb-2">
-              Contact
+    <footer className="bg-luxury-dark pt-24 pb-12 px-6 md:px-12 text-white/80">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-20 border-b border-gold/10 pb-20">
+        <div className="space-y-6">
+          <Link to="/" className="inline-flex flex-col items-start group">
+            <span className="font-display text-3xl tracking-[0.4em] text-gold group-hover:text-gold-light transition-colors">
+              C.M
             </span>
-            WhatsApp: +92 XXX XXXXXXX <br />
-            Email: info@cmscents.pk <br />
-            Pakistan — Nationwide Delivery
+            <span className="text-[10px] tracking-[0.4em] text-white/40 uppercase -mt-1">
+              Scents
+            </span>
+          </Link>
+          <p className="font-serif italic text-sm leading-relaxed text-white/50 max-w-xs">
+            Crafted to leave an impression. Each fragrance is a journey — from
+            the first spritz to the final lingering note.
+          </p>
+          <div className="space-y-4 pt-4">
+            <div className="flex items-center gap-3 text-xs tracking-widest uppercase text-gold">
+              <Phone size={14} />
+              <span>+92 300 0000000</span>
+            </div>
+            <div className="flex items-center gap-3 text-xs tracking-widest uppercase text-gold">
+              <Mail size={14} />
+              <span>info@cmscents.pk</span>
+            </div>
+            <div className="flex items-center gap-3 text-xs tracking-widest uppercase text-gold">
+              <MapPin size={14} />
+              <span>Lahore, Pakistan</span>
+            </div>
           </div>
         </div>
 
-        {/* COLLECTION */}
         <div>
-          <div className="text-[9px] tracking-[5px] text-gold uppercase mb-6">
+          <h3 className="font-display text-xs tracking-[0.5em] text-gold uppercase mb-10 border-b border-gold/20 pb-4">
             Collection
-          </div>
-
-          <ul className="space-y-3">
+          </h3>
+          <ul className="space-y-4">
             {[
               "Dynamic Mist",
               "Tempest Noir",
@@ -112,84 +55,114 @@ export const Footer = () => {
               "Citrus Elixir",
             ].map((item) => (
               <li key={item}>
-                <a
-                  href="#collection"
-                  className="text-sm text-white/30 hover:text-gold transition"
+                <Link
+                  to="/collection"
+                  className="text-xs tracking-widest uppercase hover:text-gold transition-colors block underline-offset-8 hover:underline"
                 >
                   {item}
-                </a>
+                </Link>
               </li>
             ))}
           </ul>
         </div>
 
-        {/* INFO */}
         <div>
-          <div className="text-[9px] tracking-[5px] text-gold uppercase mb-6">
+          <h3 className="font-display text-xs tracking-[0.5em] text-gold uppercase mb-10 border-b border-gold/20 pb-4">
             Information
-          </div>
-
-          <ul className="space-y-3">
-            {["Our Story", "How to Order", "Contact", "Return Policy"].map(
-              (item) => (
-                <li key={item}>
-                  <a
-                    href={`#${item.toLowerCase().replace(" ", "-")}`}
-                    className="text-sm text-white/30 hover:text-gold transition"
-                  >
-                    {item}
-                  </a>
-                </li>
-              ),
-            )}
+          </h3>
+          <ul className="space-y-4">
+            <li>
+              <Link
+                to="/#about"
+                className="text-xs tracking-widest uppercase hover:text-gold transition-colors block"
+              >
+                Our Story
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/how-to-order"
+                className="text-xs tracking-widest uppercase hover:text-gold transition-colors block"
+              >
+                How to Order
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/contact"
+                className="text-xs tracking-widest uppercase hover:text-gold transition-colors block"
+              >
+                Contact Us
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/return-policy"
+                className="text-xs tracking-widest uppercase hover:text-gold transition-colors block"
+              >
+                Return Policy
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/authenticity"
+                className="text-xs tracking-widest uppercase hover:text-gold transition-colors block"
+              >
+                Authenticity
+              </Link>
+            </li>
           </ul>
         </div>
 
-        {/* POLICIES */}
         <div>
-          <div className="text-[9px] tracking-[5px] text-gold uppercase mb-6">
-            Policies
+          <h3 className="font-display text-xs tracking-[0.5em] text-gold uppercase mb-10 border-b border-gold/20 pb-4">
+            Follow Us
+          </h3>
+          <p className="text-xs tracking-widest uppercase mb-6 leading-relaxed">
+            Stay updated with our latest releases and artisanal scent stories.
+          </p>
+          <div className="flex gap-4">
+            <a
+              href="#"
+              className="w-10 h-10 border border-gold/30 flex items-center justify-center hover:border-gold hover:text-gold transition-all"
+            >
+              <Instagram size={16} />
+            </a>
+            <a
+              href="#"
+              className="w-10 h-10 border border-gold/30 flex items-center justify-center hover:border-gold hover:text-gold transition-all"
+            >
+              <Facebook size={16} />
+            </a>
+            <a
+              href="#"
+              className="w-10 h-10 border border-gold/30 flex items-center justify-center hover:border-gold hover:text-gold transition-all"
+            >
+              <Linkedin size={16} />
+            </a>
           </div>
-
-          <ul className="space-y-3">
-            {["Privacy Policy", "COD Policy", "Authenticity"].map((item) => (
-              <li key={item}>
-                <a
-                  href="#"
-                  className="text-sm text-white/30 hover:text-gold transition"
-                >
-                  {item}
-                </a>
-              </li>
-            ))}
-          </ul>
         </div>
       </div>
 
-      {/* BOTTOM BAR */}
-      <div
-        className="max-w-[1380px] mx-auto border-t border-white/10 px-5 md:px-[60px]
-                      py-6 flex flex-col md:flex-row justify-between items-center gap-4"
-      >
-        <span className="text-[10px] text-white/20 tracking-[2px]">
-          © 2025 C.M Scents. All rights reserved.
-        </span>
-
-        <div className="flex gap-3">
-          {["f", "in", "✦"].map((social) => (
-            <a
-              key={social}
-              href="#"
-              className="w-9 h-9 rounded-full border border-white/10
-                         flex items-center justify-center
-                         text-white/30 hover:text-gold hover:border-gold
-                         transition"
-            >
-              {social}
-            </a>
-          ))}
+      <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+        <p className="text-[10px] tracking-widest uppercase text-white/30">
+          © 2024 C.M Scents. All rights reserved.
+        </p>
+        <div className="flex gap-8">
+          <a
+            href="#"
+            className="text-[10px] tracking-widest uppercase text-white/30 hover:text-gold"
+          >
+            Privacy Policy
+          </a>
+          <a
+            href="#"
+            className="text-[10px] tracking-widest uppercase text-white/30 hover:text-gold"
+          >
+            Terms of Service
+          </a>
         </div>
       </div>
     </footer>
   );
-};
+}

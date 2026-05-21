@@ -1,158 +1,114 @@
-import React from "react";
-import { motion, AnimatePresence } from "motion/react";
-import { X, Trash2, Plus, Minus } from "lucide-react";
+import { X, Minus, Plus, Trash2 } from 'lucide-react';
+import { useDispatch, useSelector } from 'react-redux';
+import { toggleCart, updateQuantity, removeFromCart } from '../store/cartSlice';
+import { Link } from 'react-router-dom';
+import { motion, AnimatePresence } from 'motion/react';
 
-export const CartSidebar = ({
-  isOpen,
-  onClose,
-  cart,
-  onUpdateQty,
-  onRemove,
-}) => {
-  /* ---------------- SAFE CART ---------------- */
-  const safeCart = (cart || []).map((item) => ({
-    ...item,
-    price: Number(item.price) || 0,
-    qty: Number(item.qty) > 0 ? Number(item.qty) : 1,
-  }));
-
-  /* ---------------- SAFE TOTAL ---------------- */
-  const subtotal = safeCart.reduce((sum, item) => {
-    return sum + item.price * item.qty;
-  }, 0);
+export default function CartSidebar() {
+  const dispatch = useDispatch();
+  const { items, isOpen } = useSelector((state) => state.cart);
+  const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   return (
     <AnimatePresence>
       {isOpen && (
         <>
-          {/* BACKDROP */}
-          <motion.div
+          {/* Overlay */}
+          <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={onClose}
-            className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[300]"
+            onClick={() => dispatch(toggleCart())}
+            className="fixed inset-0 bg-luxury-dark/60 backdrop-blur-sm z-[100]"
           />
-
-          {/* SIDEBAR */}
-          <motion.div
-            initial={{ x: "100%" }}
+          
+          {/* Sidebar */}
+          <motion.div 
+            initial={{ x: '100%' }}
             animate={{ x: 0 }}
-            exit={{ x: "100%" }}
-            transition={{ type: "spring", damping: 28, stiffness: 220 }}
-            className="fixed top-0 right-0 bottom-0 w-full md:w-[460px]
-                       bg-gradient-to-b from-[#0a0a0a] via-[#0b0b0b] to-[#050505]
-                       border-l border-gold/10 z-[400] flex flex-col"
+            exit={{ x: '100%' }}
+            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+            className="fixed top-0 right-0 h-full w-full max-w-md bg-white border-l border-gold/20 shadow-2xl z-[101] flex flex-col"
           >
-            <div className="flex justify-between items-center p-7 px-8 border-b border-white/10">
-              <span className="font-display text-[11px] tracking-[5px] text-gold/80 uppercase">
-                Your Selection
-              </span>
-
-              <button
-                onClick={onClose}
-                className="w-9 h-9 rounded-full border border-gold/20 text-white/60
-                           hover:border-gold/50 hover:text-gold transition
-                           flex items-center justify-center"
+            <div className="p-8 flex justify-between items-center border-b border-luxury-bg2">
+              <h2 className="font-display text-lg tracking-[0.2em] text-luxury-dark">YOUR SELECTION</h2>
+              <button 
+                onClick={() => dispatch(toggleCart())}
+                className="p-2 border border-gold/20 rounded-none text-luxury-muted hover:text-gold hover:border-gold transition-all"
               >
-                <X size={16} />
+                <X size={20} />
               </button>
             </div>
 
-            {/* ITEMS */}
-            <div className="flex-1 overflow-y-auto px-8 py-6">
-              {safeCart.length === 0 ? (
-                <div className="text-center py-[80px]">
-                  <p className="font-serif italic text-white/40">
-                    Your selection is empty
-                  </p>
+            <div className="flex-1 overflow-y-auto p-8 space-y-6">
+              {items.length === 0 ? (
+                <div className="h-full flex flex-col items-center justify-center text-center space-y-4">
+                  <p className="font-serif italic text-xl text-luxury-muted">Your selection is currently empty.</p>
+                  <Link 
+                    to="/collection" 
+                    onClick={() => dispatch(toggleCart())}
+                    className="text-gold tracking-[0.3em] text-xs uppercase hover:underline"
+                  >
+                    Discover our fragrances
+                  </Link>
                 </div>
               ) : (
-                <div className="space-y-6">
-                  {safeCart.map((item) => (
-                    <div
-                      key={item.id}
-                      className="flex gap-4 items-center pb-6 border-b border-white/5"
-                    >
-                      {/* ICON */}
-                      <div className="w-[52px] h-[52px] rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-xl">
-                        {item.icon}
-                      </div>
-
-                      {/* DETAILS */}
-                      <div className="flex-1 min-w-0">
-                        <div className="font-display text-[13px] text-white">
-                          {item.name}
-                        </div>
-
-                        <div className="text-[10px] text-white/40 uppercase mt-1">
-                          {item.sub} · 50ml EDP
-                        </div>
-
-                        {/* QTY */}
-                        <div className="flex items-center gap-3 mt-3">
-                          <button
-                            onClick={() => onUpdateQty(item.id, -1)}
-                            className="w-7 h-7 rounded-full border border-gold/20 text-gold flex items-center justify-center"
-                          >
-                            <Minus size={12} />
-                          </button>
-
-                          <span className="text-white font-display text-sm min-w-[20px] text-center">
-                            {item.qty}
-                          </span>
-
-                          <button
-                            onClick={() => onUpdateQty(item.id, 1)}
-                            className="w-7 h-7 rounded-full border border-gold/20 text-gold flex items-center justify-center"
-                          >
-                            <Plus size={12} />
-                          </button>
-                        </div>
-                      </div>
-
-                      {/* PRICE + REMOVE */}
-                      <div className="flex flex-col items-end gap-3">
-                        <button
-                          onClick={() => onRemove(item.id)}
-                          className="text-white/40 hover:text-red-400 transition"
+                items.map((item) => (
+                  <div key={item.id} className="flex gap-4 pb-6 border-b border-luxury-bg2 group">
+                    <div className={`w-20 h-24 ${item.lbl} flex items-center justify-center text-2xl`}>
+                      {item.icon}
+                    </div>
+                    <div className="flex-1 space-y-1">
+                      <div className="flex justify-between items-start">
+                        <h3 className="font-display text-sm text-luxury-dark tracking-wide">{item.name}</h3>
+                        <button 
+                          onClick={() => dispatch(removeFromCart(item.id))}
+                          className="text-luxury-muted hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100"
                         >
                           <Trash2 size={16} />
                         </button>
-
-                        <div className="font-display text-gold text-sm">
-                          Rs. {(item.price * item.qty).toLocaleString()}
+                      </div>
+                      <p className="text-[10px] text-luxury-muted tracking-[0.2em] uppercase">{item.sub} · 50ml</p>
+                      
+                      <div className="flex justify-between items-center pt-2">
+                        <div className="flex items-center gap-4 border border-gold/10 px-2 py-1">
+                          <button 
+                            onClick={() => dispatch(updateQuantity({ id: item.id, quantity: item.quantity - 1 }))}
+                            className="text-gold hover:scale-110 transition-transform"
+                          >
+                            <Minus size={14} />
+                          </button>
+                          <span className="font-display text-sm min-w-[20px] text-center">{item.quantity}</span>
+                          <button 
+                            onClick={() => dispatch(updateQuantity({ id: item.id, quantity: item.quantity + 1 }))}
+                            className="text-gold hover:scale-110 transition-transform"
+                          >
+                            <Plus size={14} />
+                          </button>
                         </div>
+                        <span className="font-display text-sm text-gold">Rs. {(item.price * item.quantity).toLocaleString()}</span>
                       </div>
                     </div>
-                  ))}
-                </div>
+                  </div>
+                ))
               )}
             </div>
 
-            {/* FOOTER */}
-            {safeCart.length > 0 && (
-              <div className="p-7 px-8 border-t border-white/10 bg-black/40">
-                <div className="flex justify-between mb-6">
-                  <span className="text-white/50 uppercase text-[11px]">
-                    Total
-                  </span>
-
-                  <span className="font-display text-2xl text-gold">
-                    Rs. {subtotal.toLocaleString()}
-                  </span>
+            {items.length > 0 && (
+              <div className="p-8 border-t border-gold/10 space-y-6">
+                <div className="flex justify-between items-center">
+                  <span className="font-display tracking-[0.3em] text-sm text-luxury-dark">TOTAL</span>
+                  <span className="font-display text-2xl text-gold">Rs. {total.toLocaleString()}</span>
                 </div>
-
-                <a
-                  href="#order"
-                  onClick={onClose}
-                  className="block w-full text-center bg-gold text-black py-4 rounded-full"
+                <Link 
+                  to="/order" 
+                  onClick={() => dispatch(toggleCart())}
+                  className="block w-full bg-gold hover:bg-gold-dark text-white text-center py-4 font-display text-sm tracking-[0.3em] transition-all hover:scale-[1.02] shadow-gold/20"
                 >
-                  Proceed to Order →
-                </a>
-
-                <p className="text-center text-[10px] text-white/30 mt-4 uppercase">
-                  Free delivery · COD Available
+                  PROCEED TO ORDER
+                </Link>
+                <p className="text-center text-[10px] text-luxury-muted tracking-widest uppercase">
+                  Free Delivery · COD Available
                 </p>
               </div>
             )}
@@ -161,4 +117,4 @@ export const CartSidebar = ({
       )}
     </AnimatePresence>
   );
-};
+}
