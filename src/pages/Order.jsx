@@ -12,13 +12,21 @@ export default function Order() {
     (sum, item) => sum + item.price * item.quantity,
     0,
   );
+  const totalSavings = items.reduce(
+    (sum, item) =>
+      sum +
+      (item.originalPrice
+        ? (item.originalPrice - item.price) * item.quantity
+        : 0),
+    0,
+  );
 
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
     city: "",
     address: "",
-    payment: "",
+    payment: "COD",
     note: "",
   });
 
@@ -304,9 +312,20 @@ export default function Order() {
                           <h4 className="font-display text-xs tracking-widest text-luxury-dark truncate">
                             {item.name}
                           </h4>
-                          <span className="font-display text-xs text-gold">
-                            Rs. {(item.price * item.quantity).toLocaleString()}
-                          </span>
+                          <div className="flex flex-col items-end shrink-0">
+                            {item.originalPrice && (
+                              <span className="text-[10px] text-luxury-muted line-through mb-0.5 leading-none">
+                                Rs.{" "}
+                                {(
+                                  item.originalPrice * item.quantity
+                                ).toLocaleString()}
+                              </span>
+                            )}
+                            <span className="font-display text-xs text-gold">
+                              Rs.{" "}
+                              {(item.price * item.quantity).toLocaleString()}
+                            </span>
+                          </div>
                         </div>
                         <p className="text-[9px] tracking-widest uppercase text-luxury-muted mt-1">
                           {item.quantity} x {item.sub}
@@ -326,6 +345,12 @@ export default function Order() {
                   <span>Shipping</span>
                   <span className="text-green-600 font-bold">FREE</span>
                 </div>
+                {totalSavings > 0 && (
+                  <div className="flex justify-between items-center text-xs tracking-widest uppercase text-green-600 font-bold">
+                    <span>Discount Savings</span>
+                    <span>- Rs. {totalSavings.toLocaleString()}</span>
+                  </div>
+                )}
                 <div className="flex justify-between items-center pt-4">
                   <span className="font-display tracking-[0.4em] text-sm text-luxury-dark uppercase">
                     Total

@@ -21,10 +21,25 @@ export default function Home() {
         </div>
 
         <div className="relative z-10 text-center px-6">
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="mb-8 inline-block select-none"
+          >
+            <span className="bg-red-600/10 text-red-600 border border-red-600/30 px-5 py-2 text-[10px] tracking-[0.4em] uppercase font-bold rounded-full inline-flex items-center gap-3 backdrop-blur-xs shadow-lg shadow-red-900/5 animate-pulse">
+              <span className="w-1.5 h-1.5 rounded-full bg-red-600 relative flex">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-red-600"></span>
+              </span>
+              Sale Now On
+            </span>
+          </motion.div>
+
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
+            transition={{ delay: 0.4 }}
             className="text-[10px] tracking-[0.8em] text-gold uppercase mb-8 flex items-center justify-center gap-4"
           >
             <span className="opacity-50">──</span> Luxury Fragrances · Pakistan{" "}
@@ -34,7 +49,7 @@ export default function Home() {
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 }}
+            transition={{ delay: 0.6 }}
             className="font-display text-[clamp(70px,12vw,150px)] font-bold leading-none text-luxury-dark tracking-[0.05em] mb-2"
           >
             C.M
@@ -43,7 +58,7 @@ export default function Home() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.7 }}
+            transition={{ delay: 0.8 }}
             className="font-display text-[clamp(18px,3.5vw,38px)] text-gold tracking-[0.6em] uppercase"
           >
             Scents
@@ -52,44 +67,21 @@ export default function Home() {
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.9 }}
-            className="font-serif italic text-lg text-luxury-muted tracking-[0.15em] mt-8 mb-12"
+            transition={{ delay: 1.0 }}
+            className="font-serif italic text-lg text-luxury-muted tracking-[0.15em] mt-8 mb-2"
           >
             Crafted to Leave an Impression
           </motion.p>
 
-          <motion.div
+          <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1.1 }}
-            className="flex flex-col sm:flex-row gap-6 justify-center items-center"
+            className="text-[12px] tracking-[0.3em] text-[#C9A84C]/80 uppercase font-display mb-12"
           >
-            <Link
-              to="/collection"
-              className="bg-gold hover:bg-gold-dark text-white px-12 py-4 text-[10px] tracking-[0.4em] uppercase transition-all hover:-translate-y-1 shadow-lg shadow-gold/20"
-            >
-              Explore Collection
-            </Link>
-            <Link
-              to="/order"
-              className="border-1.5 border-gold text-gold hover:bg-gold hover:text-white px-12 py-4 text-[10px] tracking-[0.4em] uppercase transition-all"
-            >
-              Order Now
-            </Link>
-          </motion.div>
+            ◆ Special Limited Time Offer · Up to 30% Off ◆
+          </motion.p>
         </div>
-
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.5 }}
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
-        >
-          <span className="text-[8px] tracking-[0.4em] text-luxury-muted uppercase">
-            Scroll
-          </span>
-          <div className="w-[1px] h-12 bg-linear-to-b from-gold to-transparent animate-pulse" />
-        </motion.div>
       </section>
 
       {/* Stats Strip */}
@@ -151,6 +143,12 @@ export default function Home() {
                   </div>
                 </div>
 
+                {product.originalPrice && (
+                  <span className="absolute top-4 left-4 bg-red-600 text-white font-display text-[9px] tracking-[0.2em] uppercase px-3 py-1 pointer-events-none z-10 shadow-lg shadow-red-900/20 animate-pulse">
+                    SALE
+                  </span>
+                )}
+
                 <div className="absolute inset-0 bg-luxury-dark/80 flex flex-col items-center justify-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                   <button
                     onClick={() => dispatch(addToCart(product))}
@@ -178,9 +176,22 @@ export default function Home() {
                   {product.desc}
                 </p>
                 <div className="flex justify-between items-center pt-4">
-                  <span className="font-display text-xl text-gold">
-                    Rs. {product.price.toLocaleString()}
-                  </span>
+                  <div className="flex flex-col">
+                    {product.originalPrice ? (
+                      <div className="flex items-baseline gap-2">
+                        <span className="font-display text-base text-luxury-muted line-through">
+                          Rs. {product.originalPrice.toLocaleString()}
+                        </span>
+                        <span className="font-display text-xl text-gold pb-0.5">
+                          Rs. {product.price.toLocaleString()}
+                        </span>
+                      </div>
+                    ) : (
+                      <span className="font-display text-xl text-gold">
+                        Rs. {product.price.toLocaleString()}
+                      </span>
+                    )}
+                  </div>
                   <div className="flex gap-2">
                     {product.notes.slice(0, 2).map((note) => (
                       <span

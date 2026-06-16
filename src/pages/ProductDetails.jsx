@@ -237,9 +237,29 @@ export default function ProductDetails() {
                 </div>
               </div>
               <h1 className="text-5xl text-luxury-dark">{product.name}</h1>
-              <p className="text-gold text-3xl font-display tracking-tight">
-                Rs. {product.price.toLocaleString()}
-              </p>
+              {product.originalPrice ? (
+                <div className="flex items-baseline gap-4 pt-1">
+                  <span className="text-gold text-3xl font-display tracking-tight">
+                    Rs. {product.price.toLocaleString()}
+                  </span>
+                  <span className="text-luxury-muted text-lg font-display line-through">
+                    Rs. {product.originalPrice.toLocaleString()}
+                  </span>
+                  <span className="bg-red-500/10 text-red-600 px-3 py-1 text-[9px] uppercase font-bold tracking-[0.2em] leading-none self-center">
+                    Save{" "}
+                    {Math.round(
+                      ((product.originalPrice - product.price) /
+                        product.originalPrice) *
+                        100,
+                    )}
+                    %
+                  </span>
+                </div>
+              ) : (
+                <p className="text-gold text-3xl font-display tracking-tight">
+                  Rs. {product.price.toLocaleString()}
+                </p>
+              )}
             </div>
 
             <div className="space-y-4">
