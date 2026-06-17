@@ -222,13 +222,12 @@ export default function Home() {
       <section id="about" className="bg-luxury-bg2 py-24 scroll-mt-20">
         <div className="max-w-7xl mx-auto px-6 md:px-12 grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
           <div className="hidden lg:flex aspect-[4/5] bg-luxury-dark items-center justify-center relative group">
-            <div className="absolute inset-5 border border-gold/20 group-hover:border-gold/40 transition-colors" />
-            <span
-              className="font-display text-[130px] leading-none text-transparent border-title opacity-20"
-              style={{ WebkitTextStroke: "1px var(--color-gold)" }}
-            >
-              CM
-            </span>
+            <div className="absolute inset-5 border border-gold/60 group-hover:border-gold/40 transition-colors" />
+            <img
+              src="/about.jpeg"
+              alt="CM"
+              className="h-[700px] w-auto opacity-50"
+            />
           </div>
 
           <div className="space-y-8">
