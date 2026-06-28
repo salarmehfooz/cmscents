@@ -3,16 +3,18 @@ export const PRODUCTS = [
     id: 1,
     name: "Dynamic Mist",
     sub: "Pour Homme",
-    category: "Fresh & Aquatic",
+    category: "Refreshing • Energetic  • Modern",
     price: 1800,
     originalPrice: 2500,
     lbl: "bg-linear-to-br from-[#0d1520] to-[#162030]",
     icon: "💧",
+    image: "/products/dynamic.webp",
     notes: ["Bergamot", "Geranium", "Cedarwood"],
     desc: "A burst of ocean breeze and citrus with a warm musky base.",
     longDesc:
-      "Experience the invigorating power of the ocean with Dynamic Mist. This fragrance captures the essence of a windswept coastline, where the bracing salt air meets the zesty brightness of Mediterranean bergamot. As the scent settles, it reveals a heart of aromatic sage and geranium, eventually resting on a deep, masculine foundation of patchouli and cedarwood. Perfect for the active man who values freshness above all else.",
+      "A fresh, energetic, and modern fragrance designed for individuals who embrace movement, confidence, and adventure. Dynamic Mist delivers a vibrant burst of freshness balanced with smooth woods and clean musk",
     images: [
+      "/products/dynamic.webp",
       "https://images.unsplash.com/photo-1541604193435-2207f94672ca?auto=format&fit=crop&q=80&w=800",
       "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&q=80&w=800",
       "https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&q=80&w=800",
@@ -46,11 +48,13 @@ export const PRODUCTS = [
     originalPrice: 2200,
     lbl: "bg-linear-to-br from-[#080808] to-[#141414]",
     icon: "⚡",
+    image: "/products/tempest.webp",
     notes: ["Black Pepper", "Leather", "Vanilla"],
     desc: "Stormy, dramatic, and irresistibly intense. Black pepper and vetiver.",
     longDesc:
       "Tempest Noir is a fragrance of contradictions—at once fierce and sophisticated. It opens with an explosion of crushed black pepper and green cardamom, creating an immediate sense of mystery. The heart is dark and earthy, featuring Haitian vetiver and leather, while the base of charred vanilla and benzoin provides a lingering, smoky sweetness. It is the scent of a man who thrives in the shadows of the night.",
     images: [
+      "/products/tempest.webp",
       "https://images.unsplash.com/photo-1595425970377-c9703cf48b6d?auto=format&fit=crop&q=80&w=800",
       "https://images.unsplash.com/photo-1583445095369-9c651e7e5d30?auto=format&fit=crop&q=80&w=800",
       "https://images.unsplash.com/photo-1557170334-a7c3c40d002d?auto=format&fit=crop&q=80&w=800",
@@ -75,11 +79,13 @@ export const PRODUCTS = [
     originalPrice: 3000,
     lbl: "bg-linear-to-br from-[#0c0c0c] to-[#181818]",
     icon: "🏙️",
+    image: "/products/executive.webp",
     notes: ["Lavender", "Iris", "Sandalwood"],
     desc: "Boardroom-ready elegance. Sandalwood and amber in perfect harmony.",
     longDesc:
       "Designed for the modern leader, Executive Code exudes confidence and poise. A clean opening of lavender and pink pepper transitions into a heart of refined iris and violet leaf. The dry-down is where this fragrance truly shines, with creamy sandalwood, rich amber, and a touch of musk providing a professional yet approachable aura that lasts from the morning briefing to the evening gala.",
     images: [
+      "/products/executive.webp",
       "https://images.unsplash.com/photo-1523293182086-7651a899d37f?auto=format&fit=crop&q=80&w=800",
       "https://images.unsplash.com/photo-1547881335-934c5625404d?auto=format&fit=crop&q=80&w=800",
     ],
@@ -103,11 +109,13 @@ export const PRODUCTS = [
     originalPrice: 3500,
     lbl: "bg-linear-to-br from-[#100e08] to-[#1a1508]",
     icon: "🪵",
+    image: "/products/oud.webp",
     notes: ["Saffron", "Rose", "Agarwood"],
     desc: "The king of orientals. Deep oud, rose, and sacred saffron.",
     longDesc:
       "Oud Royale is a tribute to the timeless luxury of the Middle East. It features the finest agarwood (oud), blended masterfully with the velvety richness of Turkish rose and the precious warmth of saffron. Notes of frankincense and burning resins add a spiritual depth, while a base of ambergris ensures a regal sillage. This is not just a perfume; it is a statement of royalty.",
     images: [
+      "/products/oud.webp",
       "https://images.unsplash.com/photo-1590736704728-f4730bb30770?auto=format&fit=crop&q=80&w=800",
       "https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&q=80&w=800",
     ],
@@ -131,11 +139,13 @@ export const PRODUCTS = [
     originalPrice: 2500,
     lbl: "bg-linear-to-br from-[#281020] to-[#3a1830]",
     icon: "🌹",
+    image: "/products/velvet.webp",
     notes: ["Lychee", "Peony", "White Musk"],
     desc: "Radiant roses draped in velvet musk. Pure femininity.",
     longDesc:
       'Velvet Éclat is a celebration of contemporary femininity. It opens with the crystalline brightness of pear and lychee, quickly giving way to a heart of blooming Peony and Damask Rose. The fragrance is wrapped in a "velvet" accord of white musk and soft vanilla, creating a scent trail that is ethereal, soft, and profoundly elegant. It’s like wearing a bouquet of the world’s rarest flowers.',
     images: [
+      "/products/velvet.webp",
       "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&q=80&w=800",
       "https://images.unsplash.com/photo-1512203530485-bc5013060614?auto=format&fit=crop&q=80&w=800",
     ],
@@ -159,11 +169,13 @@ export const PRODUCTS = [
     originalPrice: 2500,
     lbl: "bg-linear-to-br from-[#0a1408] to-[#0e1c0a]",
     icon: "🍊",
+    image: "/products/citrus.webp",
     notes: ["Lime", "Neroli", "Cedarwood"],
     desc: "Zesty bergamot, lime, and neroli — the ultimate daytime freshness.",
     longDesc:
       "An explosion of solar energy in a bottle. Citrus Elixir is the ultimate antidote to early mornings and humid summer days. It features a triple-citrus opening of Sicilian lemon, lime, and bergamot, enhanced by the green crispness of mint and neroli. A heart of petitgrain adds a sophisticated botanical touch, while a light cedarwood base provides structure without weight. Pure, unadulterated vitality.",
     images: [
+      "/products/citrus.webp",
       "https://images.unsplash.com/photo-1616949114821-0370043878b7?auto=format&fit=crop&q=80&w=800",
       "https://images.unsplash.com/photo-1515377905703-c4788e51af15?auto=format&fit=crop&q=80&w=800",
     ],

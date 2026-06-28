@@ -43,21 +43,12 @@ export default function Collection() {
             className="group"
           >
             <div className="aspect-[4/5] relative overflow-hidden mb-6">
-              <div
-                className={`w-full h-full ${product.lbl} flex flex-col items-center justify-center gap-6 p-8 transition-transform duration-700 group-hover:scale-110`}
-              >
-                <div className="w-[1px] h-14 bg-linear-to-b from-transparent via-[#C9A84C] to-transparent" />
-                <div className="font-display text-3xl font-bold text-[#D4A93A] tracking-widest text-center">
-                  {product.name}
-                </div>
-                <div className="text-[10px] tracking-[0.5em] text-white/40 uppercase -mt-2">
-                  {product.sub}
-                </div>
-                <div className="border border-gold/30 px-4 py-1.5 text-[9px] tracking-widest uppercase text-[#C9A84C]">
-                  Eau de Parfum
-                </div>
-                <div className="text-4xl opacity-80">{product.icon}</div>
-              </div>
+              <img
+                src={product.image}
+                alt={product.name}
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                referrerPolicy="no-referrer"
+              />
 
               {product.originalPrice && (
                 <span className="absolute top-4 left-4 bg-red-600 text-white font-display text-[9px] tracking-[0.2em] uppercase px-3 py-1 pointer-events-none z-10 shadow-lg shadow-red-900/20 animate-pulse">

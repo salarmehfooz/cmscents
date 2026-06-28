@@ -77,11 +77,23 @@ export default function Home() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1.1 }}
-            className="text-[12px] tracking-[0.3em] text-[#C9A84C]/80 uppercase font-display mb-12"
+            className="text-[10px] tracking-[0.3em] text-[#C9A84C]/80 uppercase font-display mb-12"
           >
-            ◆ Special Limited Time Offer · Up to 30% Off ◆
+            ◆ Special Limited Time Offer · Up to 40% Off ◆
           </motion.p>
         </div>
+
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.7 }}
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+        >
+          <span className="text-[8px] tracking-[0.4em] text-luxury-muted uppercase">
+            Scroll
+          </span>
+          <div className="w-[1px] h-12 bg-linear-to-b from-gold to-transparent animate-pulse" />
+        </motion.div>
       </section>
 
       {/* Stats Strip */}
@@ -124,24 +136,12 @@ export default function Home() {
               className="bg-white border border-gold/10 overflow-hidden group relative flex flex-col"
             >
               <div className="aspect-square relative overflow-hidden">
-                <div
-                  className={`w-full h-full ${product.lbl} flex flex-col items-center justify-center gap-6 p-8`}
-                >
-                  <div className="w-[1px] h-10 bg-linear-to-b from-transparent via-[#C9A84C] to-transparent" />
-                  <div className="font-display text-2xl font-bold text-[#D4A93A] tracking-widest text-center">
-                    {product.name}
-                  </div>
-                  <div className="text-[9px] tracking-[0.5em] text-white/40 uppercase -mt-2">
-                    {product.sub}
-                  </div>
-                  <div className="border border-gold/30 px-3 py-1 text-[8px] tracking-widest uppercase text-[#C9A84C]">
-                    Eau de Parfum
-                  </div>
-                  <div className="text-3xl opacity-80">{product.icon}</div>
-                  <div className="font-display text-[9px] tracking-[0.3em] text-[#C9A84C]/40 uppercase mt-2">
-                    50ml · 1.7 FL.OZ
-                  </div>
-                </div>
+                <img
+                  src={product.image}
+                  alt={product.name}
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  referrerPolicy="no-referrer"
+                />
 
                 {product.originalPrice && (
                   <span className="absolute top-4 left-4 bg-red-600 text-white font-display text-[9px] tracking-[0.2em] uppercase px-3 py-1 pointer-events-none z-10 shadow-lg shadow-red-900/20 animate-pulse">
@@ -222,12 +222,13 @@ export default function Home() {
       <section id="about" className="bg-luxury-bg2 py-24 scroll-mt-20">
         <div className="max-w-7xl mx-auto px-6 md:px-12 grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
           <div className="hidden lg:flex aspect-[4/5] bg-luxury-dark items-center justify-center relative group">
-            <div className="absolute inset-5 border border-gold/60 group-hover:border-gold/40 transition-colors" />
-            <img
-              src="/about.jpeg"
-              alt="CM"
-              className="h-[700px] w-auto opacity-50"
-            />
+            <div className="absolute inset-5 border border-gold/20 group-hover:border-gold/40 transition-colors" />
+            <span
+              className="font-display text-[130px] leading-none text-transparent border-title opacity-20"
+              style={{ WebkitTextStroke: "1px var(--color-gold)" }}
+            >
+              CM
+            </span>
           </div>
 
           <div className="space-y-8">

@@ -302,10 +302,13 @@ export default function Order() {
                 ) : (
                   items.map((item) => (
                     <div key={item.id} className="flex gap-4">
-                      <div
-                        className={`w-16 h-16 ${item.lbl} flex items-center justify-center text-xl shrink-0`}
-                      >
-                        {item.icon}
+                      <div className="w-16 h-16 overflow-hidden relative border border-gold/10 flex items-center justify-center bg-white shrink-0">
+                        <img
+                          src={item.image}
+                          alt={item.name}
+                          className="w-full h-full object-cover"
+                          referrerPolicy="no-referrer"
+                        />
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex justify-between items-start gap-2">

@@ -73,10 +73,13 @@ export default function CartSidebar() {
                     key={item.id}
                     className="flex gap-4 pb-6 border-b border-luxury-bg2 group"
                   >
-                    <div
-                      className={`w-20 h-24 ${item.lbl} flex items-center justify-center text-2xl`}
-                    >
-                      {item.icon}
+                    <div className="w-20 h-24 overflow-hidden relative border border-gold/10 flex items-center justify-center bg-white shrink-0">
+                      <img
+                        src={item.image}
+                        alt={item.name}
+                        className="w-full h-full object-cover"
+                        referrerPolicy="no-referrer"
+                      />
                     </div>
                     <div className="flex-1 space-y-1">
                       <div className="flex justify-between items-start">

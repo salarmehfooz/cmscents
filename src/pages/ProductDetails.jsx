@@ -162,13 +162,12 @@ export default function ProductDetails() {
                       className="w-full h-full object-cover"
                     />
                   ) : (
-                    <div
-                      className={`w-full h-full ${product.lbl} flex flex-col items-center justify-center p-20`}
-                    >
-                      <div className="font-display text-4xl font-bold text-[#D4A93A] tracking-[0.2em]">
-                        {product.name}
-                      </div>
-                      <div className="text-6xl mt-8">{product.icon}</div>
+                    <div className="w-full h-full flex flex-col items-center justify-center bg-luxury-dark">
+                      <img
+                        src={product.image}
+                        alt={product.name}
+                        className="w-full h-full object-cover"
+                      />
                     </div>
                   )}
                 </motion.div>
