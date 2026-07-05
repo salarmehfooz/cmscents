@@ -279,10 +279,10 @@ export default function Home() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {[
-            { icon: "📱", label: "WhatsApp", value: "+92 300 0000000" },
+            { icon: "📱", label: "WhatsApp", value: "+92 333 3641997" },
             { icon: "📦", label: "Delivery", value: "All Pakistan" },
             { icon: "🕐", label: "Hours", value: "9AM – 10PM Daily" },
-            { icon: "📸", label: "Instagram", value: "@cmscents" },
+            { icon: "📸", label: "Instagram", value: "@c.mscentss" },
           ].map((item, idx) => (
             <div
               key={idx}
