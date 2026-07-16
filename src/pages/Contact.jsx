@@ -46,7 +46,7 @@ export default function Contact() {
                 </span>
               </div>
               <p className="font-display text-sm tracking-widest text-luxury-dark">
-                +92 300 0000000
+                +92 333 3641997
               </p>
             </div>
             <div className="space-y-4">
@@ -57,7 +57,7 @@ export default function Contact() {
                 </span>
               </div>
               <p className="font-display text-sm tracking-widest text-luxury-dark uppercase">
-                info@cmscents.pk
+                cmscentspk@gmail.com
               </p>
             </div>
             <div className="space-y-4">
@@ -68,7 +68,7 @@ export default function Contact() {
                 </span>
               </div>
               <p className="font-display text-sm tracking-widest text-luxury-dark uppercase">
-                Lahore, Pakistan
+                Hyderabad, Pakistan
               </p>
             </div>
             <div className="space-y-4 text-gold">

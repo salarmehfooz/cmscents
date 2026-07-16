@@ -28,15 +28,15 @@ export default function Footer() {
           <div className="space-y-4 pt-4">
             <div className="flex items-center gap-3 text-xs tracking-widest uppercase text-gold">
               <Phone size={14} />
-              <span>+92 300 0000000</span>
+              <span>+92 333 3641997</span>
             </div>
             <div className="flex items-center gap-3 text-xs tracking-widest uppercase text-gold">
               <Mail size={14} />
-              <span>info@cmscents.pk</span>
+              <span>cmscentspk@gmail.com</span>
             </div>
             <div className="flex items-center gap-3 text-xs tracking-widest uppercase text-gold">
               <MapPin size={14} />
-              <span>Lahore, Pakistan</span>
+              <span>Hyderabad, Pakistan</span>
             </div>
           </div>
         </div>
@@ -146,7 +146,7 @@ export default function Footer() {
 
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
         <p className="text-[10px] tracking-widest uppercase text-white/30">
-          © 2024 C.M Scents. All rights reserved.
+          © 2026 C.M Scents. All rights reserved.
         </p>
         <div className="flex gap-8">
           <a

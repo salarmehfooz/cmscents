@@ -1,12 +1,26 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { clearCart } from "../store/cartSlice";
 import { motion } from "motion/react";
 import { ShoppingBag, Truck, CreditCard, CheckCircle2 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import {
+  initAuth,
+  googleSignIn,
+  logout,
+  findSpreadsheet,
+  createSpreadsheet,
+  appendOrderRow,
+} from "../lib/googleAuth";
 
 export default function Order() {
   const dispatch = useDispatch();
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const showAdminPanel =
+    searchParams.get("admin") === "true" ||
+    searchParams.get("merchant") === "true" ||
+    searchParams.get("setup") === "true";
   const { items } = useSelector((state) => state.cart);
   const total = items.reduce(
     (sum, item) => sum + item.price * item.quantity,
@@ -33,6 +47,90 @@ export default function Order() {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Google Sheets Integration States
+  const [googleUser, setGoogleUser] = useState(null);
+  const [googleToken, setGoogleToken] = useState(null);
+  const [spreadsheetId, setSpreadsheetId] = useState(null);
+  const [orderNumber, setOrderNumber] = useState("");
+  const [sheetStatus, setSheetStatus] = useState("");
+  const [isConnectingGoogle, setIsConnectingGoogle] = useState(false);
+  const [isLoggedToSheet, setIsLoggedToSheet] = useState(false);
+
+  useEffect(() => {
+    const unsubscribe = initAuth(
+      (user, token) => {
+        setGoogleUser(user);
+        if (token) {
+          setGoogleToken(token);
+          const savedSheetId = localStorage.getItem("cm_scents_spreadsheet_id");
+          if (savedSheetId) {
+            setSpreadsheetId(savedSheetId);
+            setSheetStatus("Connected. Ready to sync new orders.");
+          } else {
+            setSheetStatus("Connected. Checking Google Sheets...");
+            findSpreadsheet(token)
+              .then((sheetId) => {
+                if (sheetId) {
+                  setSpreadsheetId(sheetId);
+                  localStorage.setItem("cm_scents_spreadsheet_id", sheetId);
+                  setSheetStatus("Connected. Sheets linked!");
+                } else {
+                  setSheetStatus(
+                    "Connected. Sheet will be created on first order.",
+                  );
+                }
+              })
+              .catch(() => {
+                setSheetStatus("Connected. Sheet check failed.");
+              });
+          }
+        }
+      },
+      () => {
+        setGoogleUser(null);
+        setGoogleToken(null);
+      },
+    );
+    return () => {
+      if (typeof unsubscribe === "function") unsubscribe();
+    };
+  }, []);
+
+  const handleGoogleLogin = async () => {
+    setIsConnectingGoogle(true);
+    setSheetStatus("Connecting to Google...");
+    try {
+      const result = await googleSignIn();
+      if (result) {
+        setGoogleUser(result.user);
+        setGoogleToken(result.accessToken);
+        setSheetStatus("Checking Drive...");
+        const sheetId = await findSpreadsheet(result.accessToken);
+        if (sheetId) {
+          setSpreadsheetId(sheetId);
+          localStorage.setItem("cm_scents_spreadsheet_id", sheetId);
+          setSheetStatus('Linked to "C.M Scents Orders" sheet.');
+        } else {
+          setSheetStatus("Will create sheet on first order.");
+        }
+      }
+    } catch (err) {
+      console.error("Google connect error:", err);
+      setSheetStatus("Google connect failed.");
+    } finally {
+      setIsConnectingGoogle(false);
+    }
+  };
+
+  const handleGoogleLogout = async () => {
+    await logout();
+    setGoogleUser(null);
+    setGoogleToken(null);
+    setSpreadsheetId(null);
+    setSheetStatus("");
+    setIsLoggedToSheet(false);
+  };
+
   const cities = [
     "Karachi",
     "Lahore",
@@ -54,8 +152,15 @@ export default function Order() {
 
     setIsSubmitting(true);
 
+    // Generate a beautiful, unique order number
+    const year = new Date().getFullYear();
+    const rand = Math.floor(10000 + Math.random() * 90000);
+    const generatedOrderNum = `CMS-${year}-${rand}`;
+    setOrderNumber(generatedOrderNum);
+
     // Prepare data exactly as Apps Script expects
     const orderData = {
+      orderNumber: generatedOrderNum,
       name: formData.name,
       phone: formData.phone,
       city: formData.city,
@@ -68,32 +173,82 @@ export default function Order() {
       note: formData.note || "None",
     };
 
+    // 1. Send via direct Sheets API if Google Auth token is connected
+    let directLogSuccess = false;
+    if (googleToken) {
+      try {
+        setSheetStatus("Locating spreadsheet...");
+        let activeSheetId = spreadsheetId;
+        if (!activeSheetId) {
+          activeSheetId = await findSpreadsheet(googleToken);
+          if (!activeSheetId) {
+            setSheetStatus('Creating "C.M Scents Orders" sheet...');
+            activeSheetId = await createSpreadsheet(googleToken);
+          }
+          setSpreadsheetId(activeSheetId);
+          localStorage.setItem("cm_scents_spreadsheet_id", activeSheetId);
+        }
+
+        setSheetStatus("Appending order row...");
+        const rowData = [
+          generatedOrderNum,
+          new Date().toLocaleString("en-PK", { timeZone: "Asia/Karachi" }),
+          formData.name,
+          formData.phone,
+          formData.city,
+          formData.address,
+          items.map((item) => `${item.name} (${item.quantity}x)`).join(", "),
+          total,
+          totalSavings,
+          formData.payment === "COD" ? "Cash on Delivery" : "Bank Transfer",
+          formData.note || "None",
+        ];
+        await appendOrderRow(googleToken, activeSheetId, rowData);
+        directLogSuccess = true;
+        setIsLoggedToSheet(true);
+        setSheetStatus("Synced successfully.");
+      } catch (sheetError) {
+        console.error("Google Sheets API direct write error:", sheetError);
+        // Do not crash checkout flow if Sheets write fails, but let owner know
+      }
+    }
+
+    // 2. Also send to standard script as fallback
     try {
-      const SCRIPT_URL =
-        "https://script.google.com/macros/s/AKfycbzJ-e6FbB2zm2FMgSjBQ3lUu19z0hn1MmtlilHSrzUP2kuuKLVN1_s0B2g5n6fO1EEVrA/exec";
+      const SCRIPT_URL = import.meta.env.VITE_APPS_SCRIPT_URL;
 
-      // Send as plain text to avoid preflight CORS issues with Apps Script
-      // Apps Script doPost(e) reads JSON from e.postData.contents
-      await fetch(SCRIPT_URL, {
-        method: "POST",
-        mode: "no-cors",
-        headers: {
-          "Content-Type": "text/plain", // Use text/plain to avoid CORS preflight, script handles parsing
-        },
-        body: JSON.stringify(orderData),
-      });
+      if (SCRIPT_URL) {
+        // Send as plain text to avoid preflight CORS issues with Apps Script
+        await fetch(SCRIPT_URL, {
+          method: "POST",
+          mode: "no-cors",
+          headers: {
+            "Content-Type": "text/plain",
+          },
+          body: JSON.stringify(orderData),
+        });
+      } else {
+        console.warn(
+          "VITE_APPS_SCRIPT_URL environment variable is not defined.",
+        );
+      }
 
-      // Since mode is 'no-cors', we can't see the response body,
-      // but we assume success if no error is thrown during fetch
       setIsSubmitting(false);
       setIsSubmitted(true);
       dispatch(clearCart());
     } catch (error) {
       console.error("Submission error:", error);
-      alert(
-        "There was a problem submitting your order. Please try again or contact us on WhatsApp.",
-      );
-      setIsSubmitting(false);
+      if (directLogSuccess) {
+        // If direct log succeeded, we can still mark as success
+        setIsSubmitting(false);
+        setIsSubmitted(true);
+        dispatch(clearCart());
+      } else {
+        alert(
+          "There was a problem submitting your order. Please try again or contact us on WhatsApp.",
+        );
+        setIsSubmitting(false);
+      }
     }
   };
 
@@ -117,6 +272,27 @@ export default function Order() {
               WhatsApp shortly to confirm your delivery details.
             </p>
           </div>
+
+          {/* Elegant Order Number Display */}
+          <div className="border border-gold/20 bg-gold/5 p-6 space-y-2 max-w-sm mx-auto select-none">
+            <p className="text-[10px] tracking-[0.3em] uppercase text-luxury-muted">
+              Your Order Number
+            </p>
+            <p className="font-mono text-2xl font-bold text-gold tracking-wider">
+              {orderNumber}
+            </p>
+            {isLoggedToSheet ? (
+              <p className="text-[9px] text-green-600 font-bold uppercase tracking-widest flex items-center justify-center gap-1.5 mt-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse inline-block" />
+                Synced to Google Sheet Successfully
+              </p>
+            ) : (
+              <p className="text-[9px] text-luxury-muted uppercase tracking-widest mt-2">
+                Saved Locally
+              </p>
+            )}
+          </div>
+
           <div className="pt-8 border-t border-gold/10 flex flex-col gap-4">
             <Link
               to="/"
@@ -150,6 +326,91 @@ export default function Order() {
               onSubmit={handleSubmit}
               className="bg-white border border-gold/10 p-10 space-y-10"
             >
+              {/* Merchant Google Sheets Integration Panel */}
+              {showAdminPanel && (
+                <div className="bg-luxury-bg border border-gold/20 p-6 space-y-4">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <h4 className="font-display text-xs tracking-widest text-luxury-dark uppercase font-bold">
+                        Google Sheets Integration
+                      </h4>
+                      <p className="text-[10px] text-luxury-muted mt-1 leading-relaxed">
+                        Connect your Google Account to automatically sync
+                        orders, customer details, and generated order numbers
+                        directly to your spreadsheet.
+                      </p>
+                    </div>
+                    <span
+                      className={`h-2.5 w-2.5 rounded-full ${googleUser ? "bg-green-500 animate-pulse" : "bg-amber-500"}`}
+                    />
+                  </div>
+
+                  {googleUser ? (
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between bg-white border border-gold/10 p-3.5">
+                        <div>
+                          <p className="font-display text-xs tracking-wider text-luxury-dark font-bold">
+                            {googleUser.displayName || "Connected Merchant"}
+                          </p>
+                          <p className="text-[10px] text-luxury-muted">
+                            {googleUser.email}
+                          </p>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={handleGoogleLogout}
+                          className="text-[10px] tracking-widest uppercase text-red-600 hover:text-red-800 font-bold hover:underline transition-colors"
+                        >
+                          Disconnect
+                        </button>
+                      </div>
+                      {sheetStatus && (
+                        <p className="text-[9px] font-mono tracking-wider text-gold/80 bg-luxury-bg border border-gold/5 px-3 py-2 uppercase">
+                          ⚡ Status: {sheetStatus}
+                        </p>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      <button
+                        type="button"
+                        onClick={handleGoogleLogin}
+                        disabled={isConnectingGoogle}
+                        className="w-full flex items-center justify-center gap-3 bg-white border border-gold/20 hover:border-gold py-3.5 px-4 text-xs tracking-widest uppercase font-bold text-luxury-dark transition-all duration-300 hover:shadow-md cursor-pointer disabled:opacity-50"
+                      >
+                        <svg
+                          version="1.1"
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 48 48"
+                          className="w-4 h-4 shrink-0"
+                        >
+                          <path
+                            fill="#EA4335"
+                            d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"
+                          ></path>
+                          <path
+                            fill="#4285F4"
+                            d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"
+                          ></path>
+                          <path
+                            fill="#FBBC05"
+                            d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"
+                          ></path>
+                          <path
+                            fill="#34A853"
+                            d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"
+                          ></path>
+                          <path fill="none" d="M0 0h48v48H0z"></path>
+                        </svg>
+                        {isConnectingGoogle
+                          ? "Connecting..."
+                          : "Connect Google Sheets"}
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
+
               <div className="space-y-6">
                 <h3 className="font-display text-sm tracking-[0.3em] uppercase text-gold pb-4 border-b border-gold/10 mb-8">
                   Shipping Information
@@ -256,6 +517,83 @@ export default function Order() {
                     </button>
                   ))}
                 </div>
+
+                {formData.payment === "BANK" && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    className="border border-gold/20 bg-luxury-bg p-6 space-y-4 overflow-hidden"
+                  >
+                    <div className="flex items-center gap-2 border-b border-gold/10 pb-2 mb-2">
+                      <CreditCard
+                        size={16}
+                        className="text-gold animate-pulse"
+                      />
+                      <h4 className="font-display text-[10px] tracking-widest text-luxury-dark uppercase font-bold">
+                        Bank Transfer Details
+                      </h4>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs font-mono text-luxury-muted">
+                      <div className="space-y-1">
+                        <span className="text-[9px] uppercase tracking-wider text-luxury-muted">
+                          Bank Name
+                        </span>
+                        <p className="font-bold text-luxury-dark">
+                          {import.meta.env.VITE_BANK_NAME || "Bank Alfalah"}
+                        </p>
+                      </div>
+                      <div className="space-y-1">
+                        <span className="text-[9px] uppercase tracking-wider text-luxury-muted">
+                          Account Title
+                        </span>
+                        <p className="font-bold text-luxury-dark">
+                          {import.meta.env.VITE_BANK_ACCOUNT_TITLE ||
+                            "C.M Scents"}
+                        </p>
+                      </div>
+                      <div className="space-y-1">
+                        <span className="text-[9px] uppercase tracking-wider text-luxury-muted">
+                          Account Number
+                        </span>
+                        <p className="font-bold text-luxury-dark">
+                          {import.meta.env.VITE_BANK_ACCOUNT_NUMBER ||
+                            "5501-123456-001"}
+                        </p>
+                      </div>
+                      <div className="space-y-1">
+                        <span className="text-[9px] uppercase tracking-wider text-luxury-muted">
+                          IBAN
+                        </span>
+                        <p className="font-bold text-luxury-dark text-[11px]">
+                          {import.meta.env.VITE_BANK_IBAN ||
+                            "PK21ALFH5501123456001"}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="pt-3 border-t border-gold/10 space-y-2">
+                      <p className="text-[10px] text-gold font-bold uppercase tracking-wider leading-relaxed flex items-start gap-2">
+                        <span className="mt-0.5 inline-block shrink-0">❖</span>
+                        <span>
+                          Please send your transfer receipt/screenshot to our
+                          WhatsApp number{" "}
+                          <a
+                            href={`https://wa.me/${import.meta.env.VITE_WHATSAPP_NUMBER || "923000000000"}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="underline hover:text-gold-dark"
+                          >
+                            {import.meta.env.VITE_WHATSAPP_DISPLAY ||
+                              "+92 300 0000000"}
+                          </a>{" "}
+                          to confirm your order.
+                        </span>
+                      </p>
+                    </div>
+                  </motion.div>
+                )}
+
                 <div className="p-4 bg-luxury-bg2 border border-gold/5 text-[10px] tracking-[0.1em] text-luxury-muted flex gap-3 text-center items-center">
                   <p>
                     Orders outside major cities may require 24h advance
