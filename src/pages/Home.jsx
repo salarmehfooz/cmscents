@@ -133,77 +133,108 @@ export default function Home() {
             <motion.div
               key={product.id}
               whileHover={{ y: -8 }}
-              className="bg-white border border-gold/10 overflow-hidden group relative flex flex-col"
+              className="bg-white border border-gold/10 overflow-hidden group relative flex flex-col cursor-pointer"
             >
-              <div className="aspect-square relative overflow-hidden">
-                <img
-                  src={product.image}
-                  alt={product.name}
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                  referrerPolicy="no-referrer"
-                />
+              <Link
+                to={`/product/${product.id}`}
+                className="flex flex-col h-full"
+              >
+                <div className="aspect-square relative overflow-hidden bg-luxury-dark/5">
+                  <img
+                    src={product.image}
+                    alt={product.name}
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    referrerPolicy="no-referrer"
+                  />
 
-                {product.originalPrice && (
-                  <span className="absolute top-4 left-4 bg-red-600 text-white font-display text-[9px] tracking-[0.2em] uppercase px-3 py-1 pointer-events-none z-10 shadow-lg shadow-red-900/20 animate-pulse">
-                    SALE
-                  </span>
-                )}
+                  {product.originalPrice && (
+                    <span className="absolute top-4 left-4 bg-red-600 text-white font-display text-[9px] tracking-[0.2em] uppercase px-3 py-1 pointer-events-none z-10 shadow-lg shadow-red-900/20 animate-pulse">
+                      SALE
+                    </span>
+                  )}
 
-                <div className="absolute inset-0 bg-luxury-dark/80 flex flex-col items-center justify-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <button
-                    onClick={() => dispatch(addToCart(product))}
-                    className="bg-gold hover:bg-gold-dark text-white px-8 py-3 text-[10px] tracking-[0.3em] uppercase transition-colors"
-                  >
-                    Add to Cart
-                  </button>
-                  <Link
-                    to={`/product/${product.id}`}
-                    className="border border-white/30 text-white hover:bg-white hover:text-luxury-dark px-8 py-3 text-[10px] tracking-[0.3em] uppercase transition-colors"
-                  >
-                    View Details
-                  </Link>
+                  {/* Desktop Hover Overlay */}
+                  <div className="hidden md:flex absolute inset-0 bg-luxury-dark/80 flex-col items-center justify-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        dispatch(addToCart(product));
+                      }}
+                      className="bg-gold hover:bg-gold-dark text-white px-8 py-3 text-[10px] tracking-[0.3em] uppercase transition-colors font-bold"
+                    >
+                      Add to Cart
+                    </button>
+                    <span className="border border-white/30 text-white hover:bg-white hover:text-luxury-dark px-8 py-3 text-[10px] tracking-[0.3em] uppercase transition-colors font-bold">
+                      View Details
+                    </span>
+                  </div>
                 </div>
-              </div>
 
-              <div className="p-8 space-y-4 border-t border-luxury-bg2">
-                <p className="text-[8px] tracking-[0.4em] text-gold uppercase">
-                  {product.category}
-                </p>
-                <h3 className="font-display text-xl text-luxury-dark tracking-wide">
-                  {product.name}
-                </h3>
-                <p className="font-serif italic text-sm text-luxury-muted leading-relaxed line-clamp-2">
-                  {product.desc}
-                </p>
-                <div className="flex justify-between items-center pt-4">
-                  <div className="flex flex-col">
-                    {product.originalPrice ? (
-                      <div className="flex items-baseline gap-2">
-                        <span className="font-display text-base text-luxury-muted line-through">
-                          Rs. {product.originalPrice.toLocaleString()}
-                        </span>
-                        <span className="font-display text-xl text-gold pb-0.5">
-                          Rs. {product.price.toLocaleString()}
-                        </span>
+                <div className="p-8 space-y-4 border-t border-luxury-bg2 flex-1 flex flex-col justify-between">
+                  <div className="space-y-2">
+                    <p className="text-[8px] tracking-[0.4em] text-gold uppercase">
+                      {product.category}
+                    </p>
+                    <h3 className="font-display text-xl text-luxury-dark tracking-wide group-hover:text-gold transition-colors">
+                      {product.name}
+                    </h3>
+                    <p className="font-serif italic text-sm text-luxury-muted leading-relaxed line-clamp-2">
+                      {product.desc}
+                    </p>
+                  </div>
+
+                  <div className="pt-4 border-t border-gold/5 space-y-4">
+                    <div className="flex justify-between items-center">
+                      <div className="flex flex-col">
+                        {product.originalPrice ? (
+                          <div className="flex items-baseline gap-2">
+                            <span className="font-display text-base text-luxury-muted line-through">
+                              Rs. {product.originalPrice.toLocaleString()}
+                            </span>
+                            <span className="font-display text-xl text-gold pb-0.5">
+                              Rs. {product.price.toLocaleString()}
+                            </span>
+                          </div>
+                        ) : (
+                          <span className="font-display text-xl text-gold">
+                            Rs. {product.price.toLocaleString()}
+                          </span>
+                        )}
                       </div>
-                    ) : (
-                      <span className="font-display text-xl text-gold">
-                        Rs. {product.price.toLocaleString()}
+                      <div className="flex gap-2">
+                        {product.notes.slice(0, 2).map((note) => (
+                          <span
+                            key={note}
+                            className="text-[7px] tracking-widest uppercase border border-gold/20 px-2 py-0.5 text-luxury-muted"
+                          >
+                            {note}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Mobile Quick Tap Buttons */}
+                    <div className="md:hidden flex gap-2 pt-2">
+                      <span className="flex-1 text-center border border-gold text-gold py-2.5 text-[9px] tracking-[0.2em] uppercase font-bold bg-white">
+                        View Details
                       </span>
-                    )}
-                  </div>
-                  <div className="flex gap-2">
-                    {product.notes.slice(0, 2).map((note) => (
-                      <span
-                        key={note}
-                        className="text-[7px] tracking-widest uppercase border border-gold/20 px-2 py-0.5 text-luxury-muted"
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          dispatch(addToCart(product));
+                        }}
+                        className="flex-1 text-center bg-gold text-white py-2.5 text-[9px] tracking-[0.2em] uppercase font-bold"
                       >
-                        {note}
-                      </span>
-                    ))}
+                        Add to Cart
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
+              </Link>
             </motion.div>
           ))}
         </div>
@@ -264,7 +295,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Contact Section Placeholder/Hook */}
+      {/* Contact Section */}
       <section
         id="contact"
         className="py-24 max-w-7xl mx-auto px-6 md:px-12 scroll-mt-20"
@@ -278,25 +309,78 @@ export default function Home() {
         </p>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {[
-            { icon: "📱", label: "WhatsApp", value: "+92 333 3641997" },
-            { icon: "📦", label: "Delivery", value: "All Pakistan" },
-            { icon: "🕐", label: "Hours", value: "9AM – 10PM Daily" },
-            { icon: "📸", label: "Instagram", value: "@c.mscentss" },
-          ].map((item, idx) => (
-            <div
-              key={idx}
-              className="bg-white border border-gold/10 p-10 text-center hover:shadow-xl hover:shadow-gold/5 transition-all"
-            >
-              <div className="text-3xl mb-4">{item.icon}</div>
-              <p className="text-gold text-[8px] tracking-[0.4em] uppercase mb-2">
-                {item.label}
-              </p>
-              <p className="font-display text-sm tracking-widest text-luxury-dark uppercase">
-                {item.value}
-              </p>
+          <a
+            href={`https://wa.me/${import.meta.env.VITE_WHATSAPP_NUMBER || "923000000000"}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-white border border-gold/10 hover:border-gold p-8 text-center hover:shadow-xl hover:shadow-gold/5 transition-all group cursor-pointer block"
+          >
+            <div className="text-3xl mb-3 group-hover:scale-110 transition-transform">
+              📱
             </div>
-          ))}
+            <p className="text-gold text-[8px] tracking-[0.4em] uppercase mb-2 font-bold">
+              WhatsApp Line 1
+            </p>
+            <p className="font-display text-sm tracking-widest text-luxury-dark uppercase group-hover:text-gold transition-colors font-bold">
+              {import.meta.env.VITE_WHATSAPP_DISPLAY || "+92 300 0000000"}
+            </p>
+            <span className="text-[9px] text-green-600 font-sans tracking-wider mt-2 block font-medium">
+              💬 Tap to Chat
+            </span>
+          </a>
+
+          <a
+            href={`https://wa.me/${import.meta.env.VITE_WHATSAPP_NUMBER_2 || "923280000000"}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-white border border-gold/10 hover:border-gold p-8 text-center hover:shadow-xl hover:shadow-gold/5 transition-all group cursor-pointer block"
+          >
+            <div className="text-3xl mb-3 group-hover:scale-110 transition-transform">
+              📱
+            </div>
+            <p className="text-gold text-[8px] tracking-[0.4em] uppercase mb-2 font-bold">
+              WhatsApp Line 2
+            </p>
+            <p className="font-display text-sm tracking-widest text-luxury-dark uppercase group-hover:text-gold transition-colors font-bold">
+              {import.meta.env.VITE_WHATSAPP_DISPLAY_2 || "+92 328 0000000"}
+            </p>
+            <span className="text-[9px] text-green-600 font-sans tracking-wider mt-2 block font-medium">
+              💬 Tap to Chat
+            </span>
+          </a>
+
+          <div className="bg-white border border-gold/10 p-8 text-center">
+            <div className="text-3xl mb-3">📦</div>
+            <p className="text-gold text-[8px] tracking-[0.4em] uppercase mb-2 font-bold">
+              Nationwide Delivery
+            </p>
+            <p className="font-display text-sm tracking-widest text-luxury-dark uppercase">
+              All Over Pakistan
+            </p>
+            <span className="text-[9px] text-luxury-muted tracking-wider mt-2 block">
+              Fast 2-4 Days Shipping
+            </span>
+          </div>
+
+          <a
+            href="https://www.instagram.com/c.mscentss"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-white border border-gold/10 hover:border-gold p-8 text-center hover:shadow-xl hover:shadow-gold/5 transition-all group cursor-pointer block"
+          >
+            <div className="text-3xl mb-3 group-hover:scale-110 transition-transform">
+              📸
+            </div>
+            <p className="text-gold text-[8px] tracking-[0.4em] uppercase mb-2 font-bold font-display">
+              Instagram
+            </p>
+            <p className="font-display text-sm tracking-widest text-luxury-dark uppercase group-hover:text-gold transition-colors">
+              @c.mscentss
+            </p>
+            <span className="text-[9px] text-luxury-muted tracking-wider mt-2 block">
+              Follow Our Journey
+            </span>
+          </a>
         </div>
       </section>
     </div>

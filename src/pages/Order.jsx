@@ -281,16 +281,6 @@ export default function Order() {
             <p className="font-mono text-2xl font-bold text-gold tracking-wider">
               {orderNumber}
             </p>
-            {isLoggedToSheet ? (
-              <p className="text-[9px] text-green-600 font-bold uppercase tracking-widest flex items-center justify-center gap-1.5 mt-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse inline-block" />
-                Synced to Google Sheet Successfully
-              </p>
-            ) : (
-              <p className="text-[9px] text-luxury-muted uppercase tracking-widest mt-2">
-                Saved Locally
-              </p>
-            )}
           </div>
 
           <div className="pt-8 border-t border-gold/10 flex flex-col gap-4">
@@ -572,24 +562,62 @@ export default function Order() {
                       </div>
                     </div>
 
-                    <div className="pt-3 border-t border-gold/10 space-y-2">
+                    <div className="pt-3 border-t border-gold/10 space-y-3">
                       <p className="text-[10px] text-gold font-bold uppercase tracking-wider leading-relaxed flex items-start gap-2">
                         <span className="mt-0.5 inline-block shrink-0">❖</span>
                         <span>
-                          Please send your transfer receipt/screenshot to our
-                          WhatsApp number{" "}
-                          <a
-                            href={`https://wa.me/${import.meta.env.VITE_WHATSAPP_NUMBER || "923000000000"}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="underline hover:text-gold-dark"
-                          >
-                            {import.meta.env.VITE_WHATSAPP_DISPLAY ||
-                              "+92 300 0000000"}
-                          </a>{" "}
-                          to confirm your order.
+                          Please send your transfer receipt/screenshot to
+                          confirm your order via WhatsApp:
                         </span>
                       </p>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+                        <a
+                          href={`https://wa.me/${import.meta.env.VITE_WHATSAPP_NUMBER || "923000000000"}?text=${encodeURIComponent("Hi C.M Scents, I would like to send my bank transfer payment receipt for my order.")}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center justify-between bg-white border border-gold/30 hover:border-gold px-3.5 py-2.5 text-xs text-luxury-dark transition-all hover:shadow-sm group"
+                        >
+                          <div className="flex items-center gap-2">
+                            <span className="text-green-600 text-sm">💬</span>
+                            <div className="flex flex-col text-left">
+                              <span className="text-[8px] uppercase tracking-widest text-luxury-muted font-sans font-bold">
+                                Line 1
+                              </span>
+                              <span className="font-mono font-bold text-luxury-dark group-hover:text-gold text-[11px]">
+                                {import.meta.env.VITE_WHATSAPP_DISPLAY ||
+                                  "+92 300 0000000"}
+                              </span>
+                            </div>
+                          </div>
+                          <span className="text-[9px] uppercase font-bold text-gold tracking-wider font-sans">
+                            Send →
+                          </span>
+                        </a>
+
+                        <a
+                          href={`https://wa.me/${import.meta.env.VITE_WHATSAPP_NUMBER_2 || "923280000000"}?text=${encodeURIComponent("Hi C.M Scents, I would like to send my bank transfer payment receipt for my order.")}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center justify-between bg-white border border-gold/30 hover:border-gold px-3.5 py-2.5 text-xs text-luxury-dark transition-all hover:shadow-sm group"
+                        >
+                          <div className="flex items-center gap-2">
+                            <span className="text-green-600 text-sm">💬</span>
+                            <div className="flex flex-col text-left">
+                              <span className="text-[8px] uppercase tracking-widest text-luxury-muted font-sans font-bold">
+                                Line 2
+                              </span>
+                              <span className="font-mono font-bold text-luxury-dark group-hover:text-gold text-[11px]">
+                                {import.meta.env.VITE_WHATSAPP_DISPLAY_2 ||
+                                  "+92 328 0000000"}
+                              </span>
+                            </div>
+                          </div>
+                          <span className="text-[9px] uppercase font-bold text-gold tracking-wider font-sans">
+                            Send →
+                          </span>
+                        </a>
+                      </div>
                     </div>
                   </motion.div>
                 )}

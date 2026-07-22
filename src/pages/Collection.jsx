@@ -40,82 +40,105 @@ export default function Collection() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: idx * 0.1 }}
-            className="group"
+            className="group cursor-pointer"
           >
-            <div className="aspect-[4/5] relative overflow-hidden mb-6">
-              <img
-                src={product.image}
-                alt={product.name}
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                referrerPolicy="no-referrer"
-              />
+            <Link to={`/product/${product.id}`} className="block">
+              <div className="aspect-[4/5] relative overflow-hidden mb-6 bg-luxury-dark/5">
+                <img
+                  src={product.image}
+                  alt={product.name}
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  referrerPolicy="no-referrer"
+                />
 
-              {product.originalPrice && (
-                <span className="absolute top-4 left-4 bg-red-600 text-white font-display text-[9px] tracking-[0.2em] uppercase px-3 py-1 pointer-events-none z-10 shadow-lg shadow-red-900/20 animate-pulse">
-                  SALE
-                </span>
-              )}
-
-              <div className="absolute inset-0 bg-luxury-dark/80 flex flex-col items-center justify-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <button
-                  onClick={() => dispatch(addToCart(product))}
-                  className="bg-gold hover:bg-gold-dark text-white px-10 py-4 text-[10px] tracking-[0.4em] uppercase font-bold transition-all"
-                >
-                  ADD TO CART
-                </button>
-                <Link
-                  to={`/product/${product.id}`}
-                  className="border border-white/40 text-white hover:bg-white hover:text-luxury-dark px-10 py-4 text-[10px] tracking-[0.4em] uppercase font-bold transition-all"
-                >
-                  VIEW DETAILS
-                </Link>
-              </div>
-            </div>
-
-            <div className="space-y-4">
-              <div className="flex justify-between items-start">
-                <div>
-                  <p className="text-gold text-[9px] tracking-[0.4em] uppercase mb-1">
-                    {product.category}
-                  </p>
-                  <h3 className="font-display text-2xl text-luxury-dark tracking-wide">
-                    {product.name}
-                  </h3>
-                </div>
-                <div className="text-right">
-                  {product.originalPrice ? (
-                    <div className="flex flex-col items-end">
-                      <span className="font-display text-xs text-luxury-muted line-through">
-                        Rs. {product.originalPrice.toLocaleString()}
-                      </span>
-                      <span className="font-display text-xl text-gold">
-                        Rs. {product.price.toLocaleString()}
-                      </span>
-                    </div>
-                  ) : (
-                    <p className="font-display text-xl text-gold">
-                      Rs. {product.price.toLocaleString()}
-                    </p>
-                  )}
-                  <p className="text-[9px] text-luxury-muted tracking-widest uppercase mt-1">
-                    50ml EDP
-                  </p>
-                </div>
-              </div>
-              <p className="font-serif italic text-luxury-muted text-base line-clamp-2 leading-relaxed">
-                {product.desc}
-              </p>
-              <div className="flex gap-3 pt-2">
-                {product.notes.map((note) => (
-                  <span
-                    key={note}
-                    className="text-[8px] tracking-[0.3em] uppercase border border-gold/10 px-3 py-1 text-luxury-muted bg-white"
-                  >
-                    {note}
+                {product.originalPrice && (
+                  <span className="absolute top-4 left-4 bg-red-600 text-white font-display text-[9px] tracking-[0.2em] uppercase px-3 py-1 pointer-events-none z-10 shadow-lg shadow-red-900/20 animate-pulse">
+                    SALE
                   </span>
-                ))}
+                )}
+
+                {/* Desktop hover overlay */}
+                <div className="hidden md:flex absolute inset-0 bg-luxury-dark/80 flex-col items-center justify-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      dispatch(addToCart(product));
+                    }}
+                    className="bg-gold hover:bg-gold-dark text-white px-10 py-4 text-[10px] tracking-[0.4em] uppercase font-bold transition-all"
+                  >
+                    ADD TO CART
+                  </button>
+                  <span className="border border-white/40 text-white hover:bg-white hover:text-luxury-dark px-10 py-4 text-[10px] tracking-[0.4em] uppercase font-bold transition-all">
+                    VIEW DETAILS
+                  </span>
+                </div>
               </div>
-            </div>
+
+              <div className="space-y-4">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <p className="text-gold text-[9px] tracking-[0.4em] uppercase mb-1">
+                      {product.category}
+                    </p>
+                    <h3 className="font-display text-2xl text-luxury-dark tracking-wide group-hover:text-gold transition-colors">
+                      {product.name}
+                    </h3>
+                  </div>
+                  <div className="text-right">
+                    {product.originalPrice ? (
+                      <div className="flex flex-col items-end">
+                        <span className="font-display text-xs text-luxury-muted line-through">
+                          Rs. {product.originalPrice.toLocaleString()}
+                        </span>
+                        <span className="font-display text-xl text-gold">
+                          Rs. {product.price.toLocaleString()}
+                        </span>
+                      </div>
+                    ) : (
+                      <p className="font-display text-xl text-gold">
+                        Rs. {product.price.toLocaleString()}
+                      </p>
+                    )}
+                    <p className="text-[9px] text-luxury-muted tracking-widest uppercase mt-1">
+                      50ml EDP
+                    </p>
+                  </div>
+                </div>
+                <p className="font-serif italic text-luxury-muted text-base line-clamp-2 leading-relaxed">
+                  {product.desc}
+                </p>
+                <div className="flex gap-3 pt-2">
+                  {product.notes.map((note) => (
+                    <span
+                      key={note}
+                      className="text-[8px] tracking-[0.3em] uppercase border border-gold/10 px-3 py-1 text-luxury-muted bg-white"
+                    >
+                      {note}
+                    </span>
+                  ))}
+                </div>
+
+                {/* Mobile direct buttons */}
+                <div className="md:hidden pt-3 flex gap-2">
+                  <span className="flex-1 text-center border border-gold text-gold py-3 text-[10px] tracking-[0.2em] uppercase font-bold bg-white">
+                    View Details
+                  </span>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      dispatch(addToCart(product));
+                    }}
+                    className="flex-1 text-center bg-gold text-white py-3 text-[10px] tracking-[0.2em] uppercase font-bold"
+                  >
+                    Add to Cart
+                  </button>
+                </div>
+              </div>
+            </Link>
           </motion.div>
         ))}
       </div>
