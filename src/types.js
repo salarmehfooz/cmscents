@@ -13,12 +13,7 @@ export const PRODUCTS = [
     desc: "A burst of ocean breeze and citrus with a warm musky base.",
     longDesc:
       "A fresh, energetic, and modern fragrance designed for individuals who embrace movement, confidence, and adventure. Dynamic Mist delivers a vibrant burst of freshness balanced with smooth woods and clean musk",
-    images: [
-      "/products/dynamic.webp",
-      "/products/box.webp",
-      "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&q=80&w=800",
-      "https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&q=80&w=800",
-    ],
+    images: ["/products/dynamic.webp", "/products/box.webp"],
     reviews: [
       {
         id: "r1",
@@ -53,12 +48,7 @@ export const PRODUCTS = [
     desc: "Stormy, dramatic, and irresistibly intense. Black pepper and vetiver.",
     longDesc:
       "Tempest Noir is a fragrance of contradictions—at once fierce and sophisticated. It opens with an explosion of crushed black pepper and green cardamom, creating an immediate sense of mystery. The heart is dark and earthy, featuring Haitian vetiver and leather, while the base of charred vanilla and benzoin provides a lingering, smoky sweetness. It is the scent of a man who thrives in the shadows of the night.",
-    images: [
-      "/products/tempest.webp",
-      "/products/box.webp",
-      "https://images.unsplash.com/photo-1583445095369-9c651e7e5d30?auto=format&fit=crop&q=80&w=800",
-      "https://images.unsplash.com/photo-1557170334-a7c3c40d002d?auto=format&fit=crop&q=80&w=800",
-    ],
+    images: ["/products/tempest.webp", "/products/box.webp"],
     reviews: [
       {
         id: "r3",
@@ -84,11 +74,7 @@ export const PRODUCTS = [
     desc: "Boardroom-ready elegance. Sandalwood and amber in perfect harmony.",
     longDesc:
       "Designed for the modern leader, Executive Code exudes confidence and poise. A clean opening of lavender and pink pepper transitions into a heart of refined iris and violet leaf. The dry-down is where this fragrance truly shines, with creamy sandalwood, rich amber, and a touch of musk providing a professional yet approachable aura that lasts from the morning briefing to the evening gala.",
-    images: [
-      "/products/executive.webp",
-      "/products/box.webp",
-      "https://images.unsplash.com/photo-1547881335-934c5625404d?auto=format&fit=crop&q=80&w=800",
-    ],
+    images: ["/products/executive.webp", "/products/box.webp"],
     reviews: [
       {
         id: "r4",
@@ -114,11 +100,7 @@ export const PRODUCTS = [
     desc: "The king of orientals. Deep oud, rose, and sacred saffron.",
     longDesc:
       "Oud Royale is a tribute to the timeless luxury of the Middle East. It features the finest agarwood (oud), blended masterfully with the velvety richness of Turkish rose and the precious warmth of saffron. Notes of frankincense and burning resins add a spiritual depth, while a base of ambergris ensures a regal sillage. This is not just a perfume; it is a statement of royalty.",
-    images: [
-      "/products/oud.webp",
-      "/products/box.webp",
-      "https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&q=80&w=800",
-    ],
+    images: ["/products/oud.webp", "/products/box.webp"],
     reviews: [
       {
         id: "r5",
@@ -144,11 +126,7 @@ export const PRODUCTS = [
     desc: "Radiant roses draped in velvet musk. Pure femininity.",
     longDesc:
       'Velvet Éclat is a celebration of contemporary femininity. It opens with the crystalline brightness of pear and lychee, quickly giving way to a heart of blooming Peony and Damask Rose. The fragrance is wrapped in a "velvet" accord of white musk and soft vanilla, creating a scent trail that is ethereal, soft, and profoundly elegant. It’s like wearing a bouquet of the world’s rarest flowers.',
-    images: [
-      "/products/velvet.webp",
-      "/products/box.webp",
-      "https://images.unsplash.com/photo-1512203530485-bc5013060614?auto=format&fit=crop&q=80&w=800",
-    ],
+    images: ["/products/velvet.webp", "/products/box.webp"],
     reviews: [
       {
         id: "r6",
@@ -174,11 +152,7 @@ export const PRODUCTS = [
     desc: "Zesty bergamot, lime, and neroli — the ultimate daytime freshness.",
     longDesc:
       "An explosion of solar energy in a bottle. Citrus Elixir is the ultimate antidote to early mornings and humid summer days. It features a triple-citrus opening of Sicilian lemon, lime, and bergamot, enhanced by the green crispness of mint and neroli. A heart of petitgrain adds a sophisticated botanical touch, while a light cedarwood base provides structure without weight. Pure, unadulterated vitality.",
-    images: [
-      "/products/citrus.webp",
-      "/products/box.webp",
-      "https://images.unsplash.com/photo-1515377905703-c4788e51af15?auto=format&fit=crop&q=80&w=800",
-    ],
+    images: ["/products/citrus.webp", "/products/box.webp"],
     reviews: [
       {
         id: "r7",
