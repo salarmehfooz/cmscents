@@ -79,7 +79,7 @@ export default function Home() {
             transition={{ delay: 1.1 }}
             className="text-[10px] tracking-[0.3em] text-[#C9A84C]/80 uppercase font-display mb-12"
           >
-            ◆ Special Limited Time Offer · Up to 40% Off ◆
+            ◆ Special Limited Time Offer · Up to 30% Off ◆
           </motion.p>
         </div>
 
