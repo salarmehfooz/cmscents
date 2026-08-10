@@ -4,6 +4,7 @@ import { store } from "./store";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import CartSidebar from "./components/CartSidebar";
+import CartNotification from "./components/CartNotification";
 import Home from "./pages/Home";
 import Collection from "./pages/Collection";
 import ProductDetails from "./pages/ProductDetails";
@@ -40,6 +41,7 @@ export default function App() {
         <div className="flex flex-col min-h-screen">
           <Navbar />
           <CartSidebar />
+          <CartNotification />
           <main className="flex-grow">
             <Routes>
               <Route path="/" element={<Home />} />

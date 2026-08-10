@@ -89,7 +89,6 @@ export default function ProductDetails() {
 
   const handleAddToCart = () => {
     dispatch(addToCart(product));
-    dispatch(toggleCart());
   };
 
   const handleReviewSubmit = async (e) => {

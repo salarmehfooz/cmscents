@@ -64,14 +64,14 @@ export default function Contact() {
                 <Mail size={18} />
                 <span className="text-[10px] tracking-[0.3em] uppercase font-bold text-luxury-muted">Email</span>
               </div>
-              <p className="font-display text-sm tracking-widest text-luxury-dark uppercase">info@cmscents.pk</p>
+              <p className="font-display text-sm tracking-widest text-luxury-dark uppercase">cmscentspk@gmail.com</p>
             </div>
             <div className="space-y-4">
               <div className="flex items-center gap-3 text-gold">
                 <MapPin size={18} />
                 <span className="text-[10px] tracking-[0.3em] uppercase font-bold text-luxury-muted">Studio</span>
               </div>
-              <p className="font-display text-sm tracking-widest text-luxury-dark uppercase">Lahore, Pakistan</p>
+              <p className="font-display text-sm tracking-widest text-luxury-dark uppercase">Hyderabad, Pakistan</p>
             </div>
             <div className="space-y-4 text-gold">
               <div className="flex gap-4">
