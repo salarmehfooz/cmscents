@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { PRODUCTS } from "../types";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../store/cartSlice";
+import { isAzadiSaleActive } from "../utils/saleUtils";
 
 export default function Home() {
   const dispatch = useDispatch();
@@ -79,7 +80,9 @@ export default function Home() {
             transition={{ delay: 1.1 }}
             className="text-[10px] tracking-[0.3em] text-[#C9A84C]/80 uppercase font-display mb-12"
           >
-            ◆ Special Limited Time Offer · Up to 30% Off ◆
+            {isAzadiSaleActive()
+              ? "◆ 14th August Azadi Grand Sale · Flat 40% Off ◆"
+              : "◆ Exceptional Craftsmanship · Pure Luxury ◆"}
           </motion.p>
         </div>
 

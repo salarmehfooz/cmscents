@@ -1,4 +1,5 @@
-export const PRODUCTS = [
+import { getEffectiveProduct } from "./utils/saleUtils";
+export const RAW_PRODUCTS = [
   {
     id: 1,
     name: "Dynamic Mist",
@@ -165,3 +166,18 @@ export const PRODUCTS = [
     ],
   },
 ];
+export const PRODUCTS = new Proxy([], {
+  get(target, prop) {
+    const effectiveProducts = RAW_PRODUCTS.map(getEffectiveProduct);
+    if (prop === "length") return effectiveProducts.length;
+    if (prop === Symbol.iterator)
+      return effectiveProducts[Symbol.iterator].bind(effectiveProducts);
+    if (typeof prop === "string" && !isNaN(Number(prop))) {
+      return effectiveProducts[Number(prop)];
+    }
+    if (typeof effectiveProducts[prop] === "function") {
+      return effectiveProducts[prop].bind(effectiveProducts);
+    }
+    return effectiveProducts[prop];
+  },
+});
