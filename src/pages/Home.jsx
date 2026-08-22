@@ -22,7 +22,7 @@ export default function Home() {
         </div>
 
         <div className="relative z-10 text-center px-6">
-          <motion.div
+          {/* <motion.div
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
@@ -35,7 +35,7 @@ export default function Home() {
               </span>
               Sale Now On
             </span>
-          </motion.div>
+          </motion.div> */}
 
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -86,7 +86,7 @@ export default function Home() {
           </motion.p>
         </div>
 
-        <motion.div
+        {/* <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.7 }}
@@ -96,7 +96,7 @@ export default function Home() {
             Scroll
           </span>
           <div className="w-[1px] h-12 bg-linear-to-b from-gold to-transparent animate-pulse" />
-        </motion.div>
+        </motion.div> */}
       </section>
 
       {/* Stats Strip */}
