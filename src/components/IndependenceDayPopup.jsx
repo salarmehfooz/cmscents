@@ -1,8 +1,15 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'motion/react';
-import { X, Sparkles, ShoppingBag, CheckCircle2, Calendar } from 'lucide-react';
-import { isSaleActive } from '../utils/saleUtils';
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { motion, AnimatePresence } from "motion/react";
+import {
+  X,
+  Sparkles,
+  ShoppingBag,
+  CheckCircle2,
+  Calendar,
+  Gift,
+} from "lucide-react";
+import { isSaleActive } from "../utils/saleUtils";
 
 export default function IndependenceDayPopup() {
   const [isOpen, setIsOpen] = useState(false);
@@ -22,13 +29,13 @@ export default function IndependenceDayPopup() {
         setIsOpen(true);
       }
     };
-    window.addEventListener('open-sale-popup', handleReopen);
-    window.addEventListener('open-azadi-popup', handleReopen);
+    window.addEventListener("open-sale-popup", handleReopen);
+    window.addEventListener("open-azadi-popup", handleReopen);
 
     return () => {
       clearTimeout(timer);
-      window.removeEventListener('open-sale-popup', handleReopen);
-      window.removeEventListener('open-azadi-popup', handleReopen);
+      window.removeEventListener("open-sale-popup", handleReopen);
+      window.removeEventListener("open-azadi-popup", handleReopen);
     };
   }, []);
 
@@ -38,7 +45,7 @@ export default function IndependenceDayPopup() {
 
   const handleShopNow = () => {
     handleClose();
-    navigate('/collection');
+    navigate("/collection");
   };
 
   return (
@@ -59,7 +66,7 @@ export default function IndependenceDayPopup() {
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+            transition={{ type: "spring", damping: 25, stiffness: 300 }}
             className="relative w-full max-w-lg bg-[#0A160E] border-2 border-gold/50 text-white shadow-2xl overflow-hidden z-10"
           >
             {/* Animated Pakistani Flag Background */}
@@ -74,7 +81,7 @@ export default function IndependenceDayPopup() {
                 transition={{
                   duration: 8,
                   repeat: Infinity,
-                  ease: 'easeInOut',
+                  ease: "easeInOut",
                 }}
                 className="w-full h-full relative flex opacity-25"
               >
@@ -86,12 +93,12 @@ export default function IndependenceDayPopup() {
                   {/* Subtle Wave Light Shimmer */}
                   <motion.div
                     animate={{
-                      x: ['-100%', '200%'],
+                      x: ["-100%", "200%"],
                     }}
                     transition={{
                       duration: 4,
                       repeat: Infinity,
-                      ease: 'linear',
+                      ease: "linear",
                     }}
                     className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent skew-x-12"
                   />
@@ -107,7 +114,7 @@ export default function IndependenceDayPopup() {
                     transition={{
                       duration: 4,
                       repeat: Infinity,
-                      ease: 'easeInOut',
+                      ease: "easeInOut",
                     }}
                   >
                     {/* Crescent */}
@@ -131,7 +138,7 @@ export default function IndependenceDayPopup() {
                   className="absolute w-1.5 h-1.5 rounded-full bg-gold/70"
                   style={{
                     top: `${15 + i * 14}%`,
-                    left: `${10 + (i * 17) % 80}%`,
+                    left: `${10 + ((i * 17) % 80)}%`,
                   }}
                   animate={{
                     y: [0, -25, 0],
@@ -147,7 +154,7 @@ export default function IndependenceDayPopup() {
               ))}
 
               {/* Vignette Overlay to maintain visual legibility */}
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0A160E] via-[#0A160E]/80 to-[#0A160E]/60" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0A160E] via-[#0A160E]/85 to-[#0A160E]/70" />
             </div>
 
             {/* Top Decorative Gold/Green Bar */}
@@ -163,7 +170,7 @@ export default function IndependenceDayPopup() {
             </button>
 
             {/* Content Container */}
-            <div className="p-6 sm:p-8 text-center space-y-6 relative z-20">
+            <div className="p-6 sm:p-8 text-center space-y-5 relative z-20">
               {/* Subtle background glow */}
               <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-64 h-64 bg-emerald-600/20 rounded-full blur-3xl pointer-events-none" />
               <div className="absolute bottom-0 right-0 w-48 h-48 bg-gold/15 rounded-full blur-3xl pointer-events-none" />
@@ -175,29 +182,60 @@ export default function IndependenceDayPopup() {
                 <Sparkles size={12} className="text-gold" />
               </div>
 
-              {/* Main Headline */}
-              <div className="space-y-2">
+              {/* Headline */}
+              <div className="space-y-1">
                 <p className="text-xs sm:text-sm font-display tracking-[0.3em] uppercase text-gold-light">
-                  Limited Time Exclusive Offer
+                  Special Limited Time Offers
                 </p>
-                <h2 className="text-3xl sm:text-5xl font-display font-bold text-white tracking-wide leading-tight">
-                  FLAT <span className="text-gold font-extrabold drop-shadow-[0_2px_10px_rgba(212,175,55,0.4)]">20% OFF</span>
+                <h2 className="text-2xl sm:text-4xl font-display font-bold text-white tracking-wide leading-tight">
+                  EXCLUSIVE PERFUME DEALS
                 </h2>
-                <p className="text-xs sm:text-sm text-gray-200 font-sans max-w-sm mx-auto leading-relaxed pt-1">
-                  Celebrate artisanal luxury with our limited-time storewide discount. Enjoy flat 20% off all signature C.M Scents fragrances.
-                </p>
               </div>
 
-              {/* Automatic Discount Confirmation Box */}
-              <div className="bg-emerald-950/80 border border-gold/40 p-3.5 max-w-sm mx-auto flex items-center justify-center gap-2 text-gold-light text-xs font-display tracking-wider uppercase">
-                <CheckCircle2 size={16} className="text-emerald-400 shrink-0" />
-                <span>Flat 20% Off Storewide • No Code Required</span>
+              {/* Dual Offer Highlights Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                {/* Offer 1: Flat 20% */}
+                <div className="bg-emerald-950/70 border border-gold/30 p-3.5 text-center flex flex-col items-center justify-center">
+                  <span className="text-[10px] tracking-[0.2em] uppercase text-gold-light font-display">
+                    Single Bottles
+                  </span>
+                  <p className="font-display font-black text-2xl sm:text-3xl text-gold mt-0.5">
+                    FLAT 20% OFF
+                  </p>
+                  <p className="text-[10px] text-gray-300 mt-1">
+                    Applied on every fragrance storewide
+                  </p>
+                </div>
+
+                {/* Offer 2: Any 3 for 5000 */}
+                <div className="bg-gold/10 border-2 border-gold p-3.5 text-center flex flex-col items-center justify-center relative overflow-hidden">
+                  <div className="absolute top-0 right-0 bg-gold text-luxury-dark text-[8px] font-bold tracking-widest uppercase px-2 py-0.5 font-display">
+                    BEST VALUE
+                  </div>
+                  <span className="text-[10px] tracking-[0.2em] uppercase text-gold-light font-display flex items-center gap-1">
+                    <Gift size={11} className="text-gold" /> Bundle Deal
+                  </span>
+                  <p className="font-display font-black text-2xl sm:text-3xl text-white mt-0.5 drop-shadow-[0_2px_10px_rgba(212,175,55,0.4)]">
+                    3 FOR <span className="text-gold">RS. 5,000</span>
+                  </p>
+                  <p className="text-[10px] text-gray-200 mt-1">
+                    Buy any 3 & save up to Rs. 4,000!
+                  </p>
+                </div>
+              </div>
+
+              {/* Confirmation Note */}
+              <div className="bg-emerald-950/80 border border-gold/30 p-2.5 max-w-md mx-auto flex items-center justify-center gap-2 text-gold-light text-xs font-display tracking-wider uppercase">
+                <CheckCircle2 size={15} className="text-emerald-400 shrink-0" />
+                <span>Both Discounts Apply Automatically In Cart</span>
               </div>
 
               {/* Expiry Banner */}
               <div className="flex items-center justify-center gap-1.5 text-[11px] tracking-widest uppercase text-emerald-300 font-medium">
                 <Calendar size={13} className="text-gold shrink-0" />
-                <span>Valid until 1st November</span>
+                <span>
+                  Offers Valid until 1st November • Free Delivery Nationwide
+                </span>
               </div>
 
               {/* Action CTAs */}
@@ -206,8 +244,11 @@ export default function IndependenceDayPopup() {
                   onClick={handleShopNow}
                   className="w-full bg-gold hover:bg-gold-light text-luxury-dark font-display text-xs sm:text-sm font-bold tracking-[0.25em] uppercase py-4 px-6 transition-all duration-300 shadow-xl shadow-gold/20 flex items-center justify-center gap-2 group cursor-pointer"
                 >
-                  <ShoppingBag size={16} className="group-hover:scale-110 transition-transform" />
-                  <span>SHOP 20% OFF SALE NOW</span>
+                  <ShoppingBag
+                    size={16}
+                    className="group-hover:scale-110 transition-transform"
+                  />
+                  <span>SHOP THE DEALS NOW</span>
                 </button>
 
                 <button

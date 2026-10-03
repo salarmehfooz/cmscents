@@ -4,6 +4,7 @@ import { clearCart } from "../store/cartSlice";
 import { motion } from "motion/react";
 import { ShoppingBag, Truck, CreditCard, CheckCircle2 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
+import { calculateCartTotals } from "../utils/saleUtils";
 import {
   initAuth,
   googleSignIn,
@@ -22,18 +23,15 @@ export default function Order() {
     searchParams.get("merchant") === "true" ||
     searchParams.get("setup") === "true";
   const { items } = useSelector((state) => state.cart);
-  const total = items.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0,
-  );
-  const totalSavings = items.reduce(
-    (sum, item) =>
-      sum +
-      (item.originalPrice
-        ? (item.originalPrice - item.price) * item.quantity
-        : 0),
-    0,
-  );
+  const {
+    originalTotal,
+    total,
+    totalSavings,
+    bundleApplied,
+    bundleSavings,
+    bundleCount,
+    totalItemsCount,
+  } = calculateCartTotals(items);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -170,7 +168,9 @@ export default function Order() {
         .join(", "),
       total: total,
       payment: formData.payment,
-      note: formData.note || "None",
+      note:
+        (bundleApplied ? `[BUNDLE: ${bundleCount}x 3 for Rs. 5000] ` : "") +
+        (formData.note || "None"),
     };
 
     // 1. Send via direct Sheets API if Google Auth token is connected
@@ -201,7 +201,8 @@ export default function Order() {
           total,
           totalSavings,
           formData.payment === "COD" ? "Cash on Delivery" : "Bank Transfer",
-          formData.note || "None",
+          (bundleApplied ? `[Bundle: 3 for Rs. 5000] ` : "") +
+            (formData.note || "None"),
         ];
         await appendOrderRow(googleToken, activeSheetId, rowData);
         directLogSuccess = true;
@@ -707,24 +708,30 @@ export default function Order() {
 
               <div className="space-y-4 pt-8 border-t border-gold/10">
                 <div className="flex justify-between items-center text-luxury-muted text-xs tracking-widest uppercase">
-                  <span>Subtotal</span>
-                  <span>Rs. {total.toLocaleString()}</span>
+                  <span>Regular Total</span>
+                  <span>Rs. {originalTotal.toLocaleString()}</span>
                 </div>
+                {bundleApplied && (
+                  <div className="flex justify-between items-center text-xs tracking-wider uppercase text-emerald-800 font-bold bg-emerald-50 px-3 py-1.5 border border-emerald-600/20">
+                    <span>Bundle Deal (3 for Rs. 5,000)</span>
+                    <span>Applied ✓</span>
+                  </div>
+                )}
                 <div className="flex justify-between items-center text-luxury-muted text-xs tracking-widest uppercase">
                   <span>Shipping</span>
                   <span className="text-green-600 font-bold">FREE</span>
                 </div>
                 {totalSavings > 0 && (
-                  <div className="flex justify-between items-center text-xs tracking-widest uppercase text-green-600 font-bold">
-                    <span>Discount Savings</span>
+                  <div className="flex justify-between items-center text-xs tracking-widest uppercase text-green-700 font-bold bg-green-500/10 px-3 py-1.5 border border-green-600/20">
+                    <span>Total Discount Savings</span>
                     <span>- Rs. {totalSavings.toLocaleString()}</span>
                   </div>
                 )}
-                <div className="flex justify-between items-center pt-4">
+                <div className="flex justify-between items-center pt-4 border-t border-gold/10">
                   <span className="font-display tracking-[0.4em] text-sm text-luxury-dark uppercase">
-                    Total
+                    Total Payable
                   </span>
-                  <span className="font-display text-3xl text-gold">
+                  <span className="font-display text-3xl text-gold font-bold">
                     Rs. {total.toLocaleString()}
                   </span>
                 </div>

@@ -1,24 +1,23 @@
-import { X, Minus, Plus, Trash2 } from "lucide-react";
+import { X, Minus, Plus, Trash2, Sparkles, CheckCircle2 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleCart, updateQuantity, removeFromCart } from "../store/cartSlice";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "motion/react";
+import { calculateCartTotals, isSaleActive } from "../utils/saleUtils";
 
 export default function CartSidebar() {
   const dispatch = useDispatch();
   const { items, isOpen } = useSelector((state) => state.cart);
-  const total = items.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0,
-  );
-  const totalSavings = items.reduce(
-    (sum, item) =>
-      sum +
-      (item.originalPrice
-        ? (item.originalPrice - item.price) * item.quantity
-        : 0),
-    0,
-  );
+
+  const {
+    total,
+    totalSavings,
+    bundleApplied,
+    bundleSavings,
+    bundleCount,
+    totalItemsCount,
+    itemsToNextBundle,
+  } = calculateCartTotals(items);
 
   return (
     <AnimatePresence>
@@ -47,13 +46,63 @@ export default function CartSidebar() {
               </h2>
               <button
                 onClick={() => dispatch(toggleCart())}
-                className="p-2 border border-gold/20 rounded-none text-luxury-muted hover:text-gold hover:border-gold transition-all"
+                className="p-2 border border-gold/20 rounded-none text-luxury-muted hover:text-gold hover:border-gold transition-all cursor-pointer"
               >
                 <X size={20} />
               </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-8 space-y-6">
+            {/* Special Offer Alert Banner in Cart */}
+            {isSaleActive() && items.length > 0 && (
+              <div className="px-6 pt-4">
+                {bundleApplied ? (
+                  <div className="bg-[#0A160E] border border-gold/40 p-3 text-gold-light text-xs flex items-center gap-3">
+                    <CheckCircle2
+                      size={18}
+                      className="text-emerald-400 shrink-0"
+                    />
+                    <div className="flex-1 min-w-0">
+                      <p className="font-display font-bold text-white tracking-wider uppercase text-[11px]">
+                        {bundleCount > 1
+                          ? `${bundleCount}x 3-Packs Bundle Applied!`
+                          : "Bundle Applied: 3 for Rs. 5,000!"}
+                      </p>
+                      <p className="text-[10px] text-gray-300">
+                        {bundleSavings > 0
+                          ? `Saved extra Rs. ${bundleSavings.toLocaleString()} on top of 20% off!`
+                          : "Enjoy 3 perfumes for Rs. 5,000!"}
+                      </p>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="bg-amber-950/20 border border-gold/30 p-3 text-luxury-dark text-xs flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <Sparkles size={16} className="text-gold shrink-0" />
+                      <p className="text-[11px] leading-tight text-luxury-dark">
+                        Add{" "}
+                        <span className="font-bold text-red-600">
+                          {itemsToNextBundle} more{" "}
+                          {itemsToNextBundle === 1 ? "bottle" : "bottles"}
+                        </span>{" "}
+                        to unlock{" "}
+                        <strong className="font-bold text-gold-dark">
+                          3 for Rs. 5,000!
+                        </strong>
+                      </p>
+                    </div>
+                    <Link
+                      to="/collection"
+                      onClick={() => dispatch(toggleCart())}
+                      className="text-[9px] uppercase tracking-wider font-bold bg-gold hover:bg-gold-dark text-white px-2.5 py-1.5 shrink-0 transition-colors"
+                    >
+                      + Add
+                    </Link>
+                  </div>
+                )}
+              </div>
+            )}
+
+            <div className="flex-1 overflow-y-auto p-6 sm:p-8 space-y-6">
               {items.length === 0 ? (
                 <div className="h-full flex flex-col items-center justify-center text-center space-y-4">
                   <p className="font-serif italic text-xl text-luxury-muted">
@@ -88,7 +137,7 @@ export default function CartSidebar() {
                         </h3>
                         <button
                           onClick={() => dispatch(removeFromCart(item.id))}
-                          className="text-luxury-muted hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100"
+                          className="text-luxury-muted hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100 cursor-pointer"
                         >
                           <Trash2 size={16} />
                         </button>
@@ -108,7 +157,7 @@ export default function CartSidebar() {
                                 }),
                               )
                             }
-                            className="text-gold hover:scale-110 transition-transform"
+                            className="text-gold hover:scale-110 transition-transform cursor-pointer"
                           >
                             <Minus size={14} />
                           </button>
@@ -124,7 +173,7 @@ export default function CartSidebar() {
                                 }),
                               )
                             }
-                            className="text-gold hover:scale-110 transition-transform"
+                            className="text-gold hover:scale-110 transition-transform cursor-pointer"
                           >
                             <Plus size={14} />
                           </button>
@@ -150,7 +199,7 @@ export default function CartSidebar() {
             </div>
 
             {items.length > 0 && (
-              <div className="p-8 border-t border-gold/10 space-y-6">
+              <div className="p-6 sm:p-8 border-t border-gold/10 space-y-5 bg-white">
                 <div className="space-y-2">
                   <div className="flex justify-between items-center">
                     <span className="font-display tracking-[0.3em] text-sm text-luxury-dark">
@@ -160,9 +209,15 @@ export default function CartSidebar() {
                       Rs. {total.toLocaleString()}
                     </span>
                   </div>
+                  {bundleApplied && (
+                    <div className="flex justify-between items-center text-[10px] tracking-widest uppercase text-emerald-800 font-bold bg-emerald-50 px-3 py-1.5 border border-emerald-600/20">
+                      <span>BUNDLE OFFER (3 FOR RS. 5,000)</span>
+                      <span>ACTIVE ✓</span>
+                    </div>
+                  )}
                   {totalSavings > 0 && (
-                    <div className="flex justify-between items-center text-[10px] tracking-widest uppercase text-green-600 font-bold bg-green-500/5 px-3 py-1.5 border border-green-600/10">
-                      <span>YOUR SAVINGS</span>
+                    <div className="flex justify-between items-center text-[10px] tracking-widest uppercase text-green-700 font-bold bg-green-500/10 px-3 py-1.5 border border-green-600/20">
+                      <span>YOUR TOTAL SAVINGS</span>
                       <span>Rs. {totalSavings.toLocaleString()}</span>
                     </div>
                   )}
@@ -175,7 +230,7 @@ export default function CartSidebar() {
                   PROCEED TO ORDER
                 </Link>
                 <p className="text-center text-[10px] text-luxury-muted tracking-widest uppercase">
-                  Free Delivery · COD Available
+                  Free Delivery Nationwide · COD Available
                 </p>
               </div>
             )}

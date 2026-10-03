@@ -40,11 +40,11 @@ export default function Navbar() {
       {isSaleActive() && (
         <button 
           onClick={() => window.dispatchEvent(new CustomEvent('open-sale-popup'))}
-          className="w-full bg-[#0A160E] hover:bg-[#0E2015] text-gold-light border-b border-gold/30 text-[10px] sm:text-xs tracking-[0.2em] font-display uppercase py-2 px-4 text-center flex items-center justify-center gap-2 cursor-pointer transition-colors"
+          className="w-full bg-[#0A160E] hover:bg-[#0E2015] text-gold-light border-b border-gold/30 text-[10px] sm:text-xs tracking-[0.18em] font-display uppercase py-2 px-4 text-center flex items-center justify-center gap-2 cursor-pointer transition-colors"
         >
           <span>🇵🇰</span>
-          <span>Grand Storewide Sale • <strong className="text-white">FLAT 20% OFF ALL PRODUCTS</strong> • Until 1st November</span>
-          <span className="hidden sm:inline text-gold-light/90">• CLICK FOR DETAILS</span>
+          <span>Grand Sale: <strong className="text-white">FLAT 20% OFF</strong> or <strong className="text-gold font-bold">BUY ANY 3 FOR RS. 5,000</strong> • Until 1st November</span>
+          <span className="hidden sm:inline text-gold-light/90">• DETAILS</span>
         </button>
       )}
 

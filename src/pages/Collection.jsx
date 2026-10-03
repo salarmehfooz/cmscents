@@ -3,13 +3,14 @@ import { Link } from 'react-router-dom';
 import { PRODUCTS } from '../types';
 import { useDispatch } from 'react-redux';
 import { addToCart } from '../store/cartSlice';
+import { isSaleActive } from '../utils/saleUtils';
 
 export default function Collection() {
   const dispatch = useDispatch();
 
   return (
     <div className="py-20 px-6 md:px-12 max-w-7xl mx-auto min-h-screen">
-      <div className="text-center mb-20 space-y-4">
+      <div className="text-center mb-16 space-y-4">
         <motion.p 
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -32,6 +33,26 @@ export default function Collection() {
           className="w-24 h-[1px] bg-gold mx-auto mt-8"
         />
       </div>
+
+      {/* Sale & Bundle Deal Notice Banner */}
+      {isSaleActive() && (
+        <div className="mb-14 bg-[#0A160E] border border-gold/40 p-4 sm:p-6 text-white flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xl">
+          <div className="flex items-center gap-3 text-center sm:text-left">
+            <span className="text-2xl hidden sm:inline">🎁</span>
+            <div>
+              <p className="font-display text-sm tracking-wider uppercase text-gold font-bold">
+                STOREWIDE OFFERS ACTIVE: FLAT 20% OFF • OR BUY ANY 3 FOR RS. 5,000
+              </p>
+              <p className="text-[11px] text-gray-300 font-sans mt-0.5">
+                Add any 3 signature perfumes to your cart to automatically get them for just Rs. 5,000! Single bottles enjoy flat 20% off.
+              </p>
+            </div>
+          </div>
+          <span className="text-[10px] tracking-widest uppercase font-bold text-emerald-400 bg-emerald-950/80 px-3 py-1.5 border border-emerald-500/30 whitespace-nowrap">
+            Auto-Applied in Cart ✓
+          </span>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16">
         {PRODUCTS.map((product, idx) => (
