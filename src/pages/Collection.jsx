@@ -1,8 +1,8 @@
-import { motion } from "motion/react";
-import { Link } from "react-router-dom";
-import { PRODUCTS } from "../types";
-import { useDispatch } from "react-redux";
-import { addToCart } from "../store/cartSlice";
+import { motion } from 'motion/react';
+import { Link } from 'react-router-dom';
+import { PRODUCTS } from '../types';
+import { useDispatch } from 'react-redux';
+import { addToCart } from '../store/cartSlice';
 
 export default function Collection() {
   const dispatch = useDispatch();
@@ -10,14 +10,14 @@ export default function Collection() {
   return (
     <div className="py-20 px-6 md:px-12 max-w-7xl mx-auto min-h-screen">
       <div className="text-center mb-20 space-y-4">
-        <motion.p
+        <motion.p 
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           className="text-gold text-[10px] tracking-[0.6em] uppercase"
         >
           ◆ The Signature Library ◆
         </motion.p>
-        <motion.h1
+        <motion.h1 
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
@@ -25,7 +25,7 @@ export default function Collection() {
         >
           Full Collection
         </motion.h1>
-        <motion.div
+        <motion.div 
           initial={{ opacity: 0, scaleX: 0 }}
           animate={{ opacity: 1, scaleX: 1 }}
           transition={{ delay: 0.2, duration: 0.8 }}
@@ -35,7 +35,7 @@ export default function Collection() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16">
         {PRODUCTS.map((product, idx) => (
-          <motion.div
+          <motion.div 
             key={product.id}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -44,22 +44,22 @@ export default function Collection() {
           >
             <Link to={`/product/${product.id}`} className="block">
               <div className="aspect-[4/5] relative overflow-hidden mb-6 bg-luxury-dark/5">
-                <img
-                  src={product.image}
-                  alt={product.name}
+                <img 
+                  src={product.image} 
+                  alt={product.name} 
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                   referrerPolicy="no-referrer"
                 />
 
                 {product.originalPrice && (
                   <span className="absolute top-4 left-4 bg-red-600 text-white font-display text-[9px] tracking-[0.2em] uppercase px-3 py-1 pointer-events-none z-10 shadow-lg shadow-red-900/20 animate-pulse">
-                    SALE
+                    {product.discountPercent ? `${product.discountPercent}% OFF` : 'SALE'}
                   </span>
                 )}
-
+                
                 {/* Desktop hover overlay */}
                 <div className="hidden md:flex absolute inset-0 bg-luxury-dark/80 flex-col items-center justify-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <button
+                  <button 
                     type="button"
                     onClick={(e) => {
                       e.preventDefault();
@@ -79,31 +79,19 @@ export default function Collection() {
               <div className="space-y-4">
                 <div className="flex justify-between items-start">
                   <div>
-                    <p className="text-gold text-[9px] tracking-[0.4em] uppercase mb-1">
-                      {product.category}
-                    </p>
-                    <h3 className="font-display text-2xl text-luxury-dark tracking-wide group-hover:text-gold transition-colors">
-                      {product.name}
-                    </h3>
+                    <p className="text-gold text-[9px] tracking-[0.4em] uppercase mb-1">{product.category}</p>
+                    <h3 className="font-display text-2xl text-luxury-dark tracking-wide group-hover:text-gold transition-colors">{product.name}</h3>
                   </div>
                   <div className="text-right">
                     {product.originalPrice ? (
                       <div className="flex flex-col items-end">
-                        <span className="font-display text-xs text-luxury-muted line-through">
-                          Rs. {product.originalPrice.toLocaleString()}
-                        </span>
-                        <span className="font-display text-xl text-gold">
-                          Rs. {product.price.toLocaleString()}
-                        </span>
+                        <span className="font-display text-xs text-luxury-muted line-through">Rs. {product.originalPrice.toLocaleString()}</span>
+                        <span className="font-display text-xl text-gold">Rs. {product.price.toLocaleString()}</span>
                       </div>
                     ) : (
-                      <p className="font-display text-xl text-gold">
-                        Rs. {product.price.toLocaleString()}
-                      </p>
+                      <p className="font-display text-xl text-gold">Rs. {product.price.toLocaleString()}</p>
                     )}
-                    <p className="text-[9px] text-luxury-muted tracking-widest uppercase mt-1">
-                      50ml EDP
-                    </p>
+                    <p className="text-[9px] text-luxury-muted tracking-widest uppercase mt-1">50ml EDP</p>
                   </div>
                 </div>
                 <p className="font-serif italic text-luxury-muted text-base line-clamp-2 leading-relaxed">
@@ -111,10 +99,7 @@ export default function Collection() {
                 </p>
                 <div className="flex gap-3 pt-2">
                   {product.notes.map((note) => (
-                    <span
-                      key={note}
-                      className="text-[8px] tracking-[0.3em] uppercase border border-gold/10 px-3 py-1 text-luxury-muted bg-white"
-                    >
+                    <span key={note} className="text-[8px] tracking-[0.3em] uppercase border border-gold/10 px-3 py-1 text-luxury-muted bg-white">
                       {note}
                     </span>
                   ))}

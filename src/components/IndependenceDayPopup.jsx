@@ -1,16 +1,16 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, Sparkles, ShoppingBag, CheckCircle2 } from 'lucide-react';
-import { isAzadiSaleActive } from '../utils/saleUtils';
+import { X, Sparkles, ShoppingBag, CheckCircle2, Calendar } from 'lucide-react';
+import { isSaleActive } from '../utils/saleUtils';
 
 export default function IndependenceDayPopup() {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Only trigger if Azadi Sale is currently active
-    if (!isAzadiSaleActive()) return;
+    // Only trigger if Sale is currently active (until 1st November)
+    if (!isSaleActive()) return;
 
     // Show popup shortly after component mounts
     const timer = setTimeout(() => {
@@ -18,14 +18,16 @@ export default function IndependenceDayPopup() {
     }, 400);
 
     const handleReopen = () => {
-      if (isAzadiSaleActive()) {
+      if (isSaleActive()) {
         setIsOpen(true);
       }
     };
+    window.addEventListener('open-sale-popup', handleReopen);
     window.addEventListener('open-azadi-popup', handleReopen);
 
     return () => {
       clearTimeout(timer);
+      window.removeEventListener('open-sale-popup', handleReopen);
       window.removeEventListener('open-azadi-popup', handleReopen);
     };
   }, []);
@@ -154,7 +156,7 @@ export default function IndependenceDayPopup() {
             {/* Close Button */}
             <button
               onClick={handleClose}
-              className="absolute top-4 right-4 z-30 w-8 h-8 rounded-full bg-black/60 hover:bg-black/90 border border-gold/40 text-white/80 hover:text-white flex items-center justify-center transition-colors"
+              className="absolute top-4 right-4 z-30 w-8 h-8 rounded-full bg-black/60 hover:bg-black/90 border border-gold/40 text-white/80 hover:text-white flex items-center justify-center transition-colors cursor-pointer"
               aria-label="Close sale popup"
             >
               <X size={18} />
@@ -169,44 +171,50 @@ export default function IndependenceDayPopup() {
               {/* Tag / Header */}
               <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-emerald-950/90 border border-emerald-500/50 rounded-full text-emerald-300 text-[10px] sm:text-xs tracking-[0.25em] font-semibold uppercase shadow-lg shadow-emerald-950/50">
                 <span>🇵🇰</span>
-                <span>14th August Azadi Grand Sale</span>
+                <span>Grand Storewide Sale</span>
                 <Sparkles size={12} className="text-gold" />
               </div>
 
               {/* Main Headline */}
               <div className="space-y-2">
                 <p className="text-xs sm:text-sm font-display tracking-[0.3em] uppercase text-gold-light">
-                  Pakistan Independence Day
+                  Limited Time Exclusive Offer
                 </p>
                 <h2 className="text-3xl sm:text-5xl font-display font-bold text-white tracking-wide leading-tight">
-                  FLAT <span className="text-gold font-extrabold drop-shadow-[0_2px_10px_rgba(212,175,55,0.4)]">40% OFF</span>
+                  FLAT <span className="text-gold font-extrabold drop-shadow-[0_2px_10px_rgba(212,175,55,0.4)]">20% OFF</span>
                 </h2>
                 <p className="text-xs sm:text-sm text-gray-200 font-sans max-w-sm mx-auto leading-relaxed pt-1">
-                  Celebrate freedom with luxury fragrances. Enjoy a storewide flat 40% discount on all premium C.M Scents collections.
+                  Celebrate artisanal luxury with our limited-time storewide discount. Enjoy flat 20% off all signature C.M Scents fragrances.
                 </p>
               </div>
 
               {/* Automatic Discount Confirmation Box */}
               <div className="bg-emerald-950/80 border border-gold/40 p-3.5 max-w-sm mx-auto flex items-center justify-center gap-2 text-gold-light text-xs font-display tracking-wider uppercase">
                 <CheckCircle2 size={16} className="text-emerald-400 shrink-0" />
-                <span>Flat 40% Off On All Products</span>
+                <span>Flat 20% Off Storewide • No Code Required</span>
+              </div>
+
+              {/* Expiry Banner */}
+              <div className="flex items-center justify-center gap-1.5 text-[11px] tracking-widest uppercase text-emerald-300 font-medium">
+                <Calendar size={13} className="text-gold shrink-0" />
+                <span>Valid until 1st November</span>
               </div>
 
               {/* Action CTAs */}
               <div className="space-y-3 pt-1 max-w-sm mx-auto">
                 <button
                   onClick={handleShopNow}
-                  className="w-full bg-gold hover:bg-gold-light text-luxury-dark font-display text-xs sm:text-sm font-bold tracking-[0.25em] uppercase py-4 px-6 transition-all duration-300 shadow-xl shadow-gold/20 flex items-center justify-center gap-2 group"
+                  className="w-full bg-gold hover:bg-gold-light text-luxury-dark font-display text-xs sm:text-sm font-bold tracking-[0.25em] uppercase py-4 px-6 transition-all duration-300 shadow-xl shadow-gold/20 flex items-center justify-center gap-2 group cursor-pointer"
                 >
                   <ShoppingBag size={16} className="group-hover:scale-110 transition-transform" />
-                  <span>SHOP AZADI SALE NOW</span>
+                  <span>SHOP 20% OFF SALE NOW</span>
                 </button>
 
                 <button
                   onClick={handleClose}
-                  className="text-[11px] tracking-[0.2em] uppercase text-gray-400 hover:text-white transition-colors underline decoration-gray-600 hover:decoration-white underline-offset-4"
+                  className="text-[11px] tracking-[0.2em] uppercase text-gray-400 hover:text-white transition-colors underline decoration-gray-600 hover:decoration-white underline-offset-4 cursor-pointer"
                 >
-                  Continue Browsing
+                  No thanks, continue browsing
                 </button>
               </div>
             </div>
@@ -219,4 +227,3 @@ export default function IndependenceDayPopup() {
     </AnimatePresence>
   );
 }
-
